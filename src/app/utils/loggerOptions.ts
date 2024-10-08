@@ -7,7 +7,7 @@ export const loggerOptions: PinoLoggerOptions = {
       colorize: true,
       crlf: false,
       translateTime: 'HH:MM:ss Z',
-      ignore: 'pid,hostname',
+      ignore: 'pid,hostname,req',
     },
   },
 };
