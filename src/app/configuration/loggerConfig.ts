@@ -1,6 +1,6 @@
 import { PinoLoggerOptions } from 'fastify/types/logger';
 
-export const loggerOptions: PinoLoggerOptions = {
+export const loggerConfig: PinoLoggerOptions = {
   transport: {
     target: 'pino-pretty',
     options: {

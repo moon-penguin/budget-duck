@@ -1,12 +1,13 @@
 import Fastify from 'fastify';
 import { app } from './app/app';
-import { loggerOptions } from './app/utils/loggerOptions';
+import { loggerConfig } from './app/configuration/loggerConfig';
+import appConfig from './app/configuration/appConfig';
 
-const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+const host = appConfig.host;
+const port = appConfig.port;
 
 const server = Fastify({
-  logger: loggerOptions,
+  logger: loggerConfig,
   disableRequestLogging: true,
 });
 
