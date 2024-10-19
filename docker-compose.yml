@@ -1,0 +1,14 @@
+version: "1.0"
+
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    hostname: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
