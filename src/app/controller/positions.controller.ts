@@ -13,17 +13,26 @@ export class PositionsController {
   ];
 
   async getPositionById(id: string) {
-    const result = this.mockPositions.find((position) => position.id === id);
-
-    if (result) {
+    try {
+      const result = this.mockPositions.find((position) => position.id === id);
       return result;
-    } else {
-      return { message: 'not found' };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return {
+          message: `Position with id: ${id} not found.`,
+        };
+      }
     }
   }
 
   async getAllPositions() {
-    return this.mockPositions;
+    try {
+      return this.mockPositions;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { message: 'Could not get all positions. ' };
+      }
+    }
   }
 
   async getSummary() {

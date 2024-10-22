@@ -1,10 +1,10 @@
 import Fastify from 'fastify';
 import { app } from './app/app';
-import { loggerConfig } from './app/configuration/loggerConfig';
-import appConfig from './app/configuration/appConfig';
+import { loggerConfig } from './app/configuration/logger.config';
+import applicationConfig from './app/configuration/application.config';
 
-const host = appConfig.host;
-const port = appConfig.port;
+const host = applicationConfig.host;
+const port = applicationConfig.port;
 
 const server = Fastify({
   logger: loggerConfig,
