@@ -9,6 +9,15 @@ export class PositionsController {
       value: 1000,
       title: 'fridge',
       category: ['food'],
+      type: 'expense',
+    }),
+    new PositionBuilder().build({
+      id: '3',
+      value: 300,
+      title: 'book',
+      category: ['literature'],
+      cycle: 'once',
+      type: 'expense',
     }),
   ];
 
