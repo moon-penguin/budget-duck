@@ -1,0 +1,22 @@
+enum Cycle {
+  ONCE
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum Type {
+  INCOME
+  EXPENSE
+}
+
+model Position {
+  id String @id @default(uuid())
+  title String
+  category String[]
+  value Float
+  cycle Cycle
+  type Type
+  date DateTime
+}
