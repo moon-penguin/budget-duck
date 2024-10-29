@@ -23,5 +23,11 @@ export default async function (fastify: FastifyInstance) {
     return await positionsController.createPosition(position as Position);
   });
 
+  fastify.put('', async (request, reply) => {
+    const position = request.body;
+    reply.statusCode = 202;
+    return await positionsController.updatePosition(position as Position);
+  });
+
   fastify.get('/summary', async () => await positionsController.getSummary());
 }

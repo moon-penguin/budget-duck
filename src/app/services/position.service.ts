@@ -19,4 +19,8 @@ export class PositionService {
   async create(position: Position) {
     return await this.positionRespository.create(position);
   }
+
+  async update(position: Position) {
+    return await this.positionRespository.update(position);
+  }
 }

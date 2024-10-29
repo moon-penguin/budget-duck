@@ -1,4 +1,5 @@
 import { Position, PrismaClient } from '@prisma/client';
+import { errorHandlerUtils } from '../utils/errorHandler.utils';
 
 export class PositionRepository {
   private database: PrismaClient;
@@ -11,9 +12,7 @@ export class PositionRepository {
     try {
       return await this.database.position.findMany();
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`[ position repository ] error: ${error.message}`);
-      }
+      errorHandlerUtils(error, 'position repository');
     }
   }
 
@@ -25,9 +24,7 @@ export class PositionRepository {
         },
       });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`[ position repository ] error: ${error.message}`);
-      }
+      errorHandlerUtils(error, 'position repository');
     }
   }
 
@@ -37,9 +34,20 @@ export class PositionRepository {
         data: position,
       });
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        throw new Error(`[ position repository ] error: ${error.message}`);
-      }
+      errorHandlerUtils(error, 'position repository');
+    }
+  }
+
+  async update(position: Position): Promise<Position> {
+    try {
+      return await this.database.position.update({
+        data: position,
+        where: {
+          id: position.id,
+        },
+      });
+    } catch (error: unknown) {
+      errorHandlerUtils(error, 'position repository');
     }
   }
 }

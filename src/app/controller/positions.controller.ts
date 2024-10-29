@@ -38,6 +38,11 @@ export class PositionsController {
     return await this.positionService.create({ ...position, date: date });
   }
 
+  async updatePosition(position: Position) {
+    const date = new Date(position.date);
+    return await this.positionService.update({ ...position, date: date });
+  }
+
   async getSummary() {
     const allPositions = await this.positionService.findAll();
     const summary = allPositions.reduce(
