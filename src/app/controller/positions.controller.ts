@@ -1,30 +1,17 @@
-import { PositionBuilder } from '../builder/PositionBuilder.builder';
 import { formatISO } from 'date-fns';
+import { PositionService } from '../services/position.service';
+import { Position } from '@prisma/client';
 
 export class PositionsController {
-  private mockPositions = [
-    new PositionBuilder().build(),
-    new PositionBuilder().build({
-      id: '2',
-      value: 1000,
-      title: 'fridge',
-      category: ['food'],
-      type: 'expense',
-    }),
-    new PositionBuilder().build({
-      id: '3',
-      value: 300,
-      title: 'book',
-      category: ['literature'],
-      cycle: 'once',
-      type: 'expense',
-    }),
-  ];
+  private positionService: PositionService;
+
+  constructor(positionService: PositionService) {
+    this.positionService = positionService;
+  }
 
   async getPositionById(id: string) {
     try {
-      const result = this.mockPositions.find((position) => position.id === id);
-      return result;
+      return await this.positionService.findById(id);
     } catch (error: unknown) {
       if (error instanceof Error) {
         return {
@@ -36,23 +23,31 @@ export class PositionsController {
 
   async getAllPositions() {
     try {
-      return this.mockPositions;
+      return await this.positionService.findAll();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        return { message: 'Could not get all positions. ' };
+        return {
+          message: 'Could not get positions.',
+        };
       }
     }
   }
 
+  async createPosition(position: Position) {
+    const date = new Date(position.date);
+    return await this.positionService.create({ ...position, date: date });
+  }
+
   async getSummary() {
-    const summary = this.mockPositions.reduce(
+    const allPositions = await this.positionService.findAll();
+    const summary = allPositions.reduce(
       (previousValue, currentValue) => previousValue + currentValue.value,
       0
     );
     return {
       summary,
       timestamp: formatISO(new Date()),
-      positions: this.mockPositions,
+      positions: allPositions,
     };
   }
 }

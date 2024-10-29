@@ -30,4 +30,16 @@ export class PositionRepository {
       }
     }
   }
+
+  async create(position: Position): Promise<Position> {
+    try {
+      return await this.database.position.create({
+        data: position,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`[ position repository ] error: ${error.message}`);
+      }
+    }
+  }
 }

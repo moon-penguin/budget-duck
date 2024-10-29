@@ -10,7 +10,6 @@ const server = Fastify({
   logger: loggerConfig,
 });
 
-server.decorate('root', 'Hello from root');
 server.register(app);
 
 server.listen({ port, host }, (err) => {
