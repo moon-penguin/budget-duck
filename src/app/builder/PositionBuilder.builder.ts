@@ -1,13 +1,13 @@
-import { Position } from '../interfaces/position.interface';
+import { Position } from '@prisma/client';
 
 export class PositionBuilder {
   private position: Position = {
     id: '1',
     title: 'Bicycle',
     category: ['leisure', 'transportation'],
-    cycle: 'once',
+    cycle: 'ONCE',
     date: new Date(),
-    type: 'expense',
+    type: 'EXPENSE',
     value: 1500,
   };
 
