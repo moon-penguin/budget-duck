@@ -10,7 +10,11 @@ export class PositionRepository {
 
   async findAll(): Promise<Position[]> {
     try {
-      return await this.database.position.findMany();
+      return await this.database.position.findMany({
+        orderBy: {
+          id: 'asc',
+        },
+      });
     } catch (error: unknown) {
       errorHandlerUtils(error, 'position repository');
     }
