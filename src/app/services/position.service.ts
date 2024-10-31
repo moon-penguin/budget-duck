@@ -23,4 +23,8 @@ export class PositionService {
   async update(position: Position) {
     return await this.positionRespository.update(position);
   }
+
+  async delete(position: Position) {
+    return await this.positionRespository.delete(position);
+  }
 }

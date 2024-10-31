@@ -2,7 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { PositionsController } from '../../../controller/positions.controller';
 import { PositionService } from '../../../services/position.service';
 import { PositionRepository } from '../../../repository/position.repository';
-import { Position, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 export default async function (fastify: FastifyInstance) {
   const prisma = new PrismaClient();
@@ -10,23 +10,26 @@ export default async function (fastify: FastifyInstance) {
   const positionsService = new PositionService(positionsRepository);
   const positionsController = new PositionsController(positionsService);
 
-  fastify.get('', async () => await positionsController.getAllPositions());
+  fastify.get(
+    '',
+    async (request, reply) =>
+      await positionsController.getAllPositions(request, reply)
+  );
 
-  fastify.get('/:id', async (request) => {
-    const positionId = request.params['id'];
-    return await positionsController.getPositionById(positionId);
+  fastify.get('/:id', async (request, reply) => {
+    return await positionsController.getPositionById(request, reply);
   });
 
   fastify.post('', async (request, reply) => {
-    const position = request.body;
-    reply.statusCode = 202;
-    return await positionsController.createPosition(position as Position);
+    return await positionsController.createPosition(request, reply);
   });
 
   fastify.put('', async (request, reply) => {
-    const position = request.body;
-    reply.statusCode = 202;
-    return await positionsController.updatePosition(position as Position);
+    return await positionsController.updatePosition(request, reply);
+  });
+
+  fastify.delete('', async (request, reply) => {
+    return await positionsController.deletePosition(request, reply);
   });
 
   fastify.get('/summary', async () => await positionsController.getSummary());

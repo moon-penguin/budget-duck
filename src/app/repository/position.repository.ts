@@ -54,4 +54,16 @@ export class PositionRepository {
       errorHandlerUtils(error, 'position repository');
     }
   }
+
+  async delete(position: Position): Promise<Position> {
+    try {
+      return await this.database.position.delete({
+        where: {
+          id: position.id,
+        },
+      });
+    } catch (error: unknown) {
+      errorHandlerUtils(error, 'position repository');
+    }
+  }
 }
