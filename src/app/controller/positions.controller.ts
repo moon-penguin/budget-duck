@@ -1,7 +1,5 @@
-import { formatISO } from 'date-fns';
 import { PositionService } from '../services/position.service';
 import { Position } from '@prisma/client';
-import { errorHandlerUtils } from '../utils/errorHandler.utils';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export class PositionsController {
@@ -17,8 +15,9 @@ export class PositionsController {
       reply.statusCode = 202;
       return await this.positionService.findById(id);
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position controller');
-      reply.notFound(`Position with id: ${id} not found.`);
+      if (error instanceof Error) {
+        reply.notFound(error.message);
+      }
     }
   }
 
@@ -26,23 +25,25 @@ export class PositionsController {
     try {
       return await this.positionService.findAll();
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position controller');
-      reply.internalServerError();
+      if (error instanceof Error) {
+        reply.internalServerError(error.message);
+      }
     }
   }
 
   async createPosition(request: FastifyRequest, reply: FastifyReply) {
-    try {
-      const reqPosition = request.body as Position;
+    const reqPosition = request.body as Position;
 
+    try {
       reply.statusCode = 202;
-      return await this.positionService.create({
+      await this.positionService.create({
         ...reqPosition,
         date: new Date(reqPosition.date),
       });
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position controller');
-      reply.internalServerError();
+      if (error instanceof Error) {
+        reply.conflict(error.message);
+      }
     }
   }
 
@@ -50,43 +51,31 @@ export class PositionsController {
     try {
       const reqPosition = request.body as Position;
 
-      reply.statusCode = 202;
-
-      return await this.positionService.update({
+      await this.positionService.update({
         ...reqPosition,
         date: new Date(reqPosition.date),
       });
+      reply.statusCode = 204;
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position controller');
-      reply.internalServerError();
+      if (error instanceof Error) {
+        reply.notFound(error.message);
+      }
     }
   }
 
   async deletePosition(request: FastifyRequest, reply: FastifyReply) {
-    try {
-      const reqPosition = request.body as Position;
+    const reqPosition = request.body as Position;
 
-      reply.statusCode = 202;
+    try {
       await this.positionService.delete({
         ...reqPosition,
         date: new Date(reqPosition.date),
       });
+      reply.statusCode = 202;
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position controller');
-      reply.internalServerError();
+      if (error instanceof Error) {
+        reply.notFound(error.message);
+      }
     }
-  }
-
-  async getSummary() {
-    const allPositions = await this.positionService.findAll();
-    const summary = allPositions.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.value,
-      0
-    );
-    return {
-      summary,
-      timestamp: formatISO(new Date()),
-      positions: allPositions,
-    };
   }
 }

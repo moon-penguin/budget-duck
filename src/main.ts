@@ -1,13 +1,13 @@
 import Fastify from 'fastify';
 import { app } from './app/app';
-import { loggerConfig } from './app/configuration/logger.config';
 import applicationConfig from './app/configuration/application.config';
+import { pinoLogger } from './app/utils/logger.utils';
 
 const host = applicationConfig.host;
 const port = applicationConfig.port;
 
 const server = Fastify({
-  logger: loggerConfig,
+  logger: pinoLogger,
 });
 
 server.register(app);

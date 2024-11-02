@@ -1,5 +1,5 @@
-import { Position, PrismaClient } from '@prisma/client';
-import { errorHandlerUtils } from '../utils/errorHandler.utils';
+import { Position, Prisma, PrismaClient } from '@prisma/client';
+import { logError } from '../utils/logError.utils';
 
 export class PositionRepository {
   private database: PrismaClient;
@@ -16,7 +16,10 @@ export class PositionRepository {
         },
       });
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position repository');
+      logError(error, 'position repository');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`${error.meta.cause}`);
+      }
     }
   }
 
@@ -28,7 +31,10 @@ export class PositionRepository {
         },
       });
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position repository');
+      logError(error, 'position repository');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`${error.meta.cause}`);
+      }
     }
   }
 
@@ -38,7 +44,10 @@ export class PositionRepository {
         data: position,
       });
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position repository');
+      logError(error, 'position repository');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`${error.meta.cause}`);
+      }
     }
   }
 
@@ -51,7 +60,10 @@ export class PositionRepository {
         },
       });
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position repository');
+      logError(error, 'position repository');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw Error(`${error.meta.cause}`);
+      }
     }
   }
 
@@ -63,7 +75,10 @@ export class PositionRepository {
         },
       });
     } catch (error: unknown) {
-      errorHandlerUtils(error, 'position repository');
+      logError(error, 'position repository');
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new Error(`${error.meta.cause}`);
+      }
     }
   }
 }

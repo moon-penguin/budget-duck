@@ -31,6 +31,4 @@ export default async function (fastify: FastifyInstance) {
   fastify.delete('', async (request, reply) => {
     return await positionsController.deletePosition(request, reply);
   });
-
-  fastify.get('/summary', async () => await positionsController.getSummary());
 }
