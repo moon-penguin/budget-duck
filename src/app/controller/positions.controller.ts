@@ -1,19 +1,19 @@
-import { PositionService } from '../services/position.service';
 import { Position } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { PositionRepository } from '../repository/position.repository';
 
 export class PositionsController {
-  private positionService: PositionService;
+  private positionRepository: PositionRepository;
 
-  constructor(positionService: PositionService) {
-    this.positionService = positionService;
+  constructor(positionRepository: PositionRepository) {
+    this.positionRepository = positionRepository;
   }
 
   async getPositionById(request: FastifyRequest, reply: FastifyReply) {
     const id = request.params['id'];
     try {
       reply.statusCode = 202;
-      return await this.positionService.findById(id);
+      return await this.positionRepository.findById(id);
     } catch (error: unknown) {
       if (error instanceof Error) {
         reply.notFound(error.message);
@@ -23,7 +23,7 @@ export class PositionsController {
 
   async getAllPositions(request: FastifyRequest, reply: FastifyReply) {
     try {
-      return await this.positionService.findAll();
+      return await this.positionRepository.findAll();
     } catch (error: unknown) {
       if (error instanceof Error) {
         reply.internalServerError(error.message);
@@ -36,7 +36,7 @@ export class PositionsController {
 
     try {
       reply.statusCode = 202;
-      await this.positionService.create({
+      await this.positionRepository.create({
         ...reqPosition,
         date: new Date(reqPosition.date),
       });
@@ -51,7 +51,7 @@ export class PositionsController {
     try {
       const reqPosition = request.body as Position;
 
-      await this.positionService.update({
+      await this.positionRepository.update({
         ...reqPosition,
         date: new Date(reqPosition.date),
       });
@@ -67,7 +67,7 @@ export class PositionsController {
     const reqPosition = request.body as Position;
 
     try {
-      await this.positionService.delete({
+      await this.positionRepository.delete({
         ...reqPosition,
         date: new Date(reqPosition.date),
       });

@@ -1,14 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import { PositionsController } from '../../../controller/positions.controller';
-import { PositionService } from '../../../services/position.service';
 import { PositionRepository } from '../../../repository/position.repository';
 import { PrismaClient } from '@prisma/client';
 
 export default async function (fastify: FastifyInstance) {
   const prisma = new PrismaClient();
   const positionsRepository = new PositionRepository(prisma);
-  const positionsService = new PositionService(positionsRepository);
-  const positionsController = new PositionsController(positionsService);
+  const positionsController = new PositionsController(positionsRepository);
 
   fastify.get(
     '',
