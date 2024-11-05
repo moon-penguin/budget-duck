@@ -9,9 +9,9 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "migragte": "npx prisma migrate dev",
-    "studio": "npx prisma studio",
-    "seed:db": "npx prisma db seed"
+    "db:migragte": "npx prisma migrate dev",
+    "db:ui": "npx prisma studio",
+    "db:seed": "npx prisma db seed"
   },
   "private": true,
   "dependencies": {

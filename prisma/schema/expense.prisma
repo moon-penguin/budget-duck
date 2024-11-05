@@ -1,0 +1,11 @@
+model Expense {
+  id        Int      @id @default(autoincrement())
+  title     String
+  category  String[]
+  value     Float
+  cycle     Cycle
+  type      Type     @default(EXPENSE)
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
