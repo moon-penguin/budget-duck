@@ -10,7 +10,7 @@ export class PositionsController {
   }
 
   async getPositionById(request: FastifyRequest, reply: FastifyReply) {
-    const id = request.params['id'];
+    const id = Number(request.params['id']);
     try {
       reply.statusCode = 202;
       return await this.positionRepository.findById(id);

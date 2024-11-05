@@ -25,13 +25,13 @@ async function seedPositions() {
   const positions: Position[] = [
     new PositionBuilder().build(),
     new PositionBuilder().build({
-      id: '2',
+      id: 2,
       title: 'Book',
       category: ['literature'],
       value: 25,
     }),
     new PositionBuilder().build({
-      id: '3',
+      id: 3,
       title: 'Tea',
       category: ['treat', 'joy'],
       value: 10,

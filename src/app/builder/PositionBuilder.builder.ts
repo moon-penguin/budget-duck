@@ -2,7 +2,7 @@ import { Position } from '@prisma/client';
 
 export class PositionBuilder {
   private position: Position = {
-    id: '1',
+    id: 1,
     title: 'Bicycle',
     category: ['leisure', 'transportation'],
     cycle: 'ONCE',

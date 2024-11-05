@@ -23,7 +23,7 @@ export class PositionRepository {
     }
   }
 
-  async findById(id: string): Promise<Position> {
+  async findById(id: number): Promise<Position> {
     try {
       return await this.database.position.findUnique({
         where: {
