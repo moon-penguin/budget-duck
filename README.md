@@ -4,6 +4,11 @@
 
 Description... Todo...
 
+## Notes
+
+- Positions Route is for now ignored and unused (not deleted, yet)
+  - transform to budget and expenses
+
 ## Tasks
 
 ### ToDo
