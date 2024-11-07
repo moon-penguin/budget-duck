@@ -1,6 +1,7 @@
-import { Position, PrismaClient, User } from '@prisma/client';
+import { Budget, Position, PrismaClient, User } from '@prisma/client';
 import { PositionBuilder } from '../../src/app/builder/PositionBuilder.builder';
 import { UserBuilder } from '../../src/app/builder/UserBuilder.builder';
+import { BudgetBuilder } from '../../src/app/builder/Budget.builder';
 
 const prisma = new PrismaClient();
 
@@ -9,6 +10,7 @@ async function seed() {
     await resetDB();
     await seedPositions();
     await seedUser();
+    await seedBudget();
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new Error('[ seed db ] could not seed database');
@@ -48,6 +50,27 @@ async function seedUser() {
 
   await prisma.user.createMany({
     data: user,
+  });
+}
+
+async function seedBudget() {
+  const budgets: Budget[] = [
+    new BudgetBuilder().build(),
+    new BudgetBuilder().build({
+      id: 2,
+      title: 'Present',
+      value: 100,
+      cycle: 'ONCE',
+      category: ['present', 'birthday'],
+      type: 'INCOME',
+      date: new Date('2024/11/05'),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }),
+  ];
+
+  await prisma.budget.createMany({
+    data: budgets,
   });
 }
 

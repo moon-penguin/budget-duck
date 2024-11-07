@@ -1,0 +1,70 @@
+import { BudgetRepository } from '../repository/budget.repository';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { Budget } from '@prisma/client';
+
+export class BudgetController {
+  private budgetRepository: BudgetRepository;
+
+  constructor(repository: BudgetRepository) {
+    this.budgetRepository = repository;
+  }
+
+  async getAll(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<Budget[]> {
+    try {
+      reply.statusCode = 202;
+      return await this.budgetRepository.findAll();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.internalServerError(error.message);
+      }
+    }
+  }
+
+  async getById(request: FastifyRequest, reply: FastifyReply): Promise<Budget> {
+    const id = Number(request.params['id']);
+
+    try {
+      const result = await this.budgetRepository.findById(id);
+
+      if (result) {
+        reply.statusCode = 202;
+        return result;
+      } else {
+        reply.notFound();
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.internalServerError(error.message);
+      }
+    }
+  }
+
+  async create(request: FastifyRequest, reply: FastifyReply) {
+    const reqBudget = request.body as Budget;
+
+    try {
+      reply.statusCode = 201;
+      await this.budgetRepository.create(reqBudget);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.internalServerError();
+      }
+    }
+  }
+
+  async update(request: FastifyRequest, reply: FastifyReply) {
+    const reqBudget = request.body as Budget;
+
+    try {
+      await this.budgetRepository.update(reqBudget);
+      reply.statusCode = 202;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.internalServerError();
+      }
+    }
+  }
+}
