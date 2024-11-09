@@ -44,6 +44,11 @@ Optional:
 - [ ] setup pre-commit hooks
 - [ ] setup ci/cd with build and testing
 
+### Deployment
+
+- [ ] find platform for node deployment
+- [ ] secret management for environment variables
+
 
 --------------------------------------------------
 
