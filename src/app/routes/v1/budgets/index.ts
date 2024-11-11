@@ -20,7 +20,7 @@ export default async function (fastify: FastifyInstance) {
     return await budgetController.create(request, reply);
   });
 
-  fastify.put('', async (request, reply) => {
+  fastify.put('/:id', async (request, reply) => {
     return await budgetController.update(request, reply);
   });
 }

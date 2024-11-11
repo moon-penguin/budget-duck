@@ -56,7 +56,12 @@ export class BudgetController {
   }
 
   async update(request: FastifyRequest, reply: FastifyReply) {
+    const id = Number(request.params['id']);
     const reqBudget = request.body as Budget;
+
+    if (id !== reqBudget.id) {
+      return reply.badRequest();
+    }
 
     try {
       await this.budgetRepository.update(reqBudget);

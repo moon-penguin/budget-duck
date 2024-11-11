@@ -20,11 +20,11 @@ export default async function (fastify: FastifyInstance) {
     return await expensesController.createExpense(request, reply);
   });
 
-  fastify.put('', async (request, reply) => {
+  fastify.put('/:id', async (request, reply) => {
     return await expensesController.updateExpense(request, reply);
   });
 
-  fastify.delete('', async (request, reply) => {
+  fastify.delete('/:id', async (request, reply) => {
     return await expensesController.deleteExpense(request, reply);
   });
 }

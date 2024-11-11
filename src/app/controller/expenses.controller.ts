@@ -63,7 +63,13 @@ export class ExpensesController {
 
   async updateExpense(request: FastifyRequest, reply: FastifyReply) {
     try {
+      const id = Number(request.params['id']);
       const reqExpense = request.body as Expense;
+
+      if (id !== reqExpense.id) {
+        return reply.badRequest();
+      }
+
       const updatedExpense = await this.expenseRepository.update({
         ...reqExpense,
         date: new Date(reqExpense.date),
@@ -85,7 +91,13 @@ export class ExpensesController {
 
   async deleteExpense(request: FastifyRequest, reply: FastifyReply) {
     try {
+      const id = Number(request.params['id']);
       const reqExpense = request.body as Expense;
+
+      if (id !== reqExpense.id) {
+        return reply.badRequest();
+      }
+
       await this.expenseRepository.delete({
         ...reqExpense,
         date: new Date(reqExpense.date),
