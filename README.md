@@ -30,6 +30,9 @@ Description... Todo...
 
 - [ ] create error classes for application-error, database-error, user-error (better error handling)
 
+- [ ] decouple dependency from prisma model
+  - [ ] create domain directory with budget and expenses
+
 
 Optional:
 - [ ] logging of database actions -> queries, warning, errors
