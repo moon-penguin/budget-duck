@@ -7,20 +7,27 @@ Description... Todo...
 ## Notes
 
 - Positions Route is for now ignored and unused (not deleted, yet)
-  - transform to budget and expenses
+  - transformation to budget and expenses
 
 ## Tasks
 
 ### ToDo
 
 - [ ] Validation and Schema for incoming requests, JSON Schema
-- [ ] Authentication for User with their own Repository for Budget and Positions
-- [x] create Budget Model
-- [ ] add schema for env -> fastify/env
+  - [x] json schema for budget
+  - [x] json schema for expenses
+  - [x] validation of requests (post)
+  - [ ] validation of request (put)
+
 - [ ] add swagger to document endpoints
-- [ ] add schema for routes - PUT, POST
+- 
+- [x] create Budget Model
+- 
+- [ ] Authentication for User with their own Repository for Budget and Positions
+- [ ] add schema for env -> fastify/env
 
 - [ ] generate fake data -> user, budget, expenses (in builder)
+
 - [ ] create error classes for application-error, database-error, user-error (better error handling)
 
 
@@ -36,12 +43,13 @@ Optional:
 
 ### Refactoring
 
-- [ ] remove positions route for the time being
+- [x] remove positions route for the time being
 
 ### Infrastructure
 
-- [ ] setup github repo
-- [ ] setup pre-commit hooks
+- [x] setup github repo
+- [ ] setup pre-commit hooks with husky
+- [ ] add renovate bot to update dependencies
 - [ ] setup ci/cd with build and testing
 
 ### Deployment

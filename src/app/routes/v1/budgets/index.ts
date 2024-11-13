@@ -16,9 +16,17 @@ export default async function (fastify: FastifyInstance) {
     return await budgetController.getById(request, reply);
   });
 
-  fastify.post('', async (request, reply) => {
-    return await budgetController.create(request, reply);
-  });
+  fastify.post(
+    '',
+    {
+      schema: {
+        body: fastify.getSchema('schema:budget'),
+      },
+    },
+    async (request, reply) => {
+      return await budgetController.create(request, reply);
+    }
+  );
 
   fastify.put('/:id', async (request, reply) => {
     return await budgetController.update(request, reply);

@@ -16,9 +16,17 @@ export default async function (fastify: FastifyInstance) {
     return await expensesController.findExpenseById(request, reply);
   });
 
-  fastify.post('', async (request, reply) => {
-    return await expensesController.createExpense(request, reply);
-  });
+  fastify.post(
+    '',
+    {
+      schema: {
+        body: fastify.getSchema('schema:expense'),
+      },
+    },
+    async (request, reply) => {
+      return await expensesController.createExpense(request, reply);
+    }
+  );
 
   fastify.put('/:id', async (request, reply) => {
     return await expensesController.updateExpense(request, reply);

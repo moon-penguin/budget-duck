@@ -9,8 +9,7 @@ export default fp(schemaLoader);
 async function schemaLoader(fastify: FastifyInstance) {
   try {
     const pathOfSchemasDirectory = './src/app/schemas';
-
-    await addSchemasInDirectory(pathOfSchemasDirectory, fastify.addSchema);
+    await addSchemasInDirectory(pathOfSchemasDirectory, fastify);
   } catch (error: unknown) {
     if (error instanceof Error) {
       logError(error, 'schema loader');
@@ -20,7 +19,7 @@ async function schemaLoader(fastify: FastifyInstance) {
 
 async function addSchemasInDirectory(
   dirPath: string,
-  addSchemaFn: (file: unknown) => void
+  fastify: FastifyInstance
 ) {
   const directoryContentsOfSchemas = await fs.readdir(dirPath);
 
@@ -29,7 +28,7 @@ async function addSchemasInDirectory(
       const directoryContent = getFullPath(dirPath, content);
 
       if (await isDirectory(directoryContent)) {
-        await addFilesOfSpecificSchema(directoryContent, addSchemaFn);
+        await addFilesOfSpecificSchema(directoryContent, fastify);
       }
     })
   );
@@ -37,15 +36,16 @@ async function addSchemasInDirectory(
 
 async function addFilesOfSpecificSchema(
   dirPath: string,
-  addSchemaFn: (file: unknown) => void
+  fastify: FastifyInstance
 ) {
   const filesOfDirectory = await fs.readdir(dirPath);
+
   await Promise.allSettled(
     filesOfDirectory.map(async (file) => {
       const schemaFilePath = getFullPath(dirPath, file);
       const schema = await readSchemaFile(schemaFilePath);
 
-      addSchemaFn(schema);
+      fastify.addSchema(JSON.parse(schema));
     })
   );
 }
