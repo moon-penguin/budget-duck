@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "$id": "schema:expense",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "value": {
+      "type": "number"
+    },
+    "cycle": {
+      "enum": ["ONCE", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"]
+    },
+    "type": {
+      "enum": ["INCOME", "EXPENSE"]
+    },
+    "date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
