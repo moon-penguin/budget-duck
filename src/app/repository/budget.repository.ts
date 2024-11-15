@@ -59,4 +59,17 @@ export class BudgetRepository {
       handlePrimaError(error);
     }
   }
+
+  async delete(budget: Budget): Promise<Budget> {
+    try {
+      return await this.database.budget.delete({
+        where: {
+          id: budget.id,
+        },
+      });
+    } catch (error: unknown) {
+      logError(error, 'budget repository');
+      handlePrimaError(error);
+    }
+  }
 }

@@ -72,4 +72,22 @@ export class BudgetController {
       }
     }
   }
+
+  async delete(request: FastifyRequest, reply: FastifyReply) {
+    const id = Number(request.params['id']);
+    const reqBudget = request.body as Budget;
+
+    if (id !== reqBudget.id) {
+      return reply.badRequest();
+    }
+
+    try {
+      await this.budgetRepository.delete(reqBudget);
+      reply.statusCode = 202;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.internalServerError();
+      }
+    }
+  }
 }

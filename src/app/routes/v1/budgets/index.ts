@@ -31,4 +31,16 @@ export default async function (fastify: FastifyInstance) {
   fastify.put('/:id', async (request, reply) => {
     return await budgetController.update(request, reply);
   });
+
+  fastify.delete(
+    '/:id',
+    {
+      schema: {
+        body: fastify.getSchema('schema:budget'),
+      },
+    },
+    async (request, reply) => {
+      return await budgetController.delete(request, reply);
+    }
+  );
 }
