@@ -5,7 +5,7 @@ import fp from 'fastify-plugin';
 export default fp(prismaORM);
 
 async function prismaORM(fastify: FastifyInstance) {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ errorFormat: 'pretty' });
 
   fastify.addHook('onReady', async function connect() {
     await prisma.$connect();

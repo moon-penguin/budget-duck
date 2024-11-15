@@ -5,7 +5,7 @@ export default fp(requestLogger);
 
 async function requestLogger(fastify: FastifyInstance) {
   fastify.addHook(
-    'onRequest',
+    'onResponse',
     async (request: FastifyRequest, reply: FastifyReply) => {
       fastify.log.info(request, reqMessage(request, reply));
     }

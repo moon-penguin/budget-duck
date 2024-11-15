@@ -15,9 +15,12 @@ server.register(app);
 
 closeWithGrace(async function ({ signal, err }) {
   if (err) {
-    server.log.error({ err }, 'server closing with error');
+    server.log.error(`[ Graceful Error ] server closing with error`);
+    server.log.error({ err });
   } else {
-    server.log.info(`${signal} received, server closing`);
+    server.log.info(
+      `[ Graceful Signal ] ${signal} received, server is closing`
+    );
   }
   await server.close();
 });
