@@ -36,12 +36,12 @@ const swaggerConfig: Partial<OpenAPIV3.Document | OpenAPIV3_1.Document> = {
 
 // TODO: add ducky favicon and logo to config
 const swaggerUIConfig: FastifySwaggerUiOptions = {
-  routePrefix: '/api/docs',
+  routePrefix: '/api/documentation',
   uiConfig: {
     docExpansion: 'list',
   },
   theme: {
-    title: 'Budget Duck Docu',
+    title: 'Budget Duck Documentation',
   },
 };
 

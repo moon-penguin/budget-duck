@@ -48,7 +48,7 @@ Workflow:
   - [x] validation of requests (post)
   - [ ] validation of request (put)
 
-- [ ] add swagger to document endpoints
+- [x] add swagger to document endpoints
 - 
 - [x] create Budget Model
 - 
