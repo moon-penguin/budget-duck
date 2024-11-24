@@ -1,6 +1,6 @@
 import { Budget, PrismaClient } from '@prisma/client';
 import { logError } from '../utils/logError.utils';
-import { handlePrimaError } from '../utils/handlePrimaError.util';
+import { handlePrismaError } from '../utils/handlePrimaError.util';
 
 export class BudgetRepository {
   private database: PrismaClient;
@@ -18,7 +18,7 @@ export class BudgetRepository {
       });
     } catch (error: unknown) {
       logError(error, 'budget repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -31,7 +31,7 @@ export class BudgetRepository {
       });
     } catch (error: unknown) {
       logError(error, 'budget repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -42,7 +42,7 @@ export class BudgetRepository {
       });
     } catch (error: unknown) {
       logError(error, 'budget repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -56,7 +56,7 @@ export class BudgetRepository {
       });
     } catch (error: unknown) {
       logError(error, 'budget repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -69,7 +69,7 @@ export class BudgetRepository {
       });
     } catch (error: unknown) {
       logError(error, 'budget repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Expense, PrismaClient } from '@prisma/client';
 import { logError } from '../utils/logError.utils';
-import { handlePrimaError } from '../utils/handlePrimaError.util';
+import { handlePrismaError } from '../utils/handlePrimaError.util';
 
 export class ExpenseRepository {
   private database: PrismaClient;
@@ -18,7 +18,7 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -31,7 +31,7 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -42,7 +42,7 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -56,7 +56,7 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 
@@ -69,7 +69,7 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrimaError(error);
+      handlePrismaError(error);
     }
   }
 }

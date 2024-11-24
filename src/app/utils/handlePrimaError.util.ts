@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-export function handlePrimaError(error: unknown) {
+export function handlePrismaError(error: unknown) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     throw new Error('Ups');
   }

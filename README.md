@@ -42,20 +42,13 @@ Workflow:
 
 ### ToDo
 
-- [ ] Validation and Schema for incoming requests, JSON Schema
-  - [x] json schema for budget
-  - [x] json schema for expenses
-  - [x] validation of requests (post)
-  - [ ] validation of request (put)
+- [ ] Authentication + Authorization for Users
+  - [ ] add user model with password
+  - [ ] hash and salt passwords and save it in database
+  - [ ] rate limiting by failed logins + temporarily lockout
+  - [ ] role-based authorization (admin, user)
+  - [ ] specify which routes can be accessed (auth-plugin)
 
-- [x] add swagger to document endpoints
-- 
-- [x] create Budget Model
-- 
-- [ ] Authentication for User with their own Repository for Budget and Positions
-- [ ] add schema for env -> fastify/env
-
-- [ ] generate fake data -> user, budget, expenses (in builder)
 
 - [ ] create error classes for application-error, database-error, user-error (better error handling)
 
@@ -68,7 +61,7 @@ Optional:
 
 ### Testing
 
-- [ ] look up how to setup tests with prisma
+- [ ] look up how to set up tests with prisma
 - [ ] look up how to write essential unit tests with fastify
 - [ ] look up how to write essential integration test with fastify
 
@@ -87,7 +80,7 @@ Optional:
 ### Deployment
 
 - [ ] find platform for node deployment
-- [ ] secret management for environment variables
+- [ ] secret management for environment variables (Hashi Corp, Google Cloud Secret Manager, AWS)
 
 
 --------------------------------------------------
