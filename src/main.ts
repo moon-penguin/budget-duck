@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import { app } from './app/app';
 import applicationConfig from './app/configuration/application.config';
-import { pinoLogger } from './app/utils/logger.utils';
+import { pinoLogger } from './app/shared/utils/logger.utils';
 import closeWithGrace from 'close-with-grace';
 
 const host = applicationConfig.host;

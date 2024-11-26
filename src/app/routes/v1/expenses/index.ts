@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { ExpenseRepository } from '../../../repository/expense.repository';
-import { ExpensesController } from '../../../controller/expenses.controller';
+import { ExpenseRepository } from '../../../modules/expenses/repository/expense.repository';
+import { ExpensesController } from '../../../modules/expenses/controller/expenses.controller';
 
 export default async function (fastify: FastifyInstance) {
   const expensesRepository = new ExpenseRepository(fastify['prisma']);

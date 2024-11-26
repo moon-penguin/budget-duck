@@ -1,14 +1,12 @@
-import { Budget, Position, PrismaClient, User } from '@prisma/client';
-import { PositionBuilder } from '../../src/app/builder/PositionBuilder.builder';
-import { UserBuilder } from '../../src/app/builder/UserBuilder.builder';
-import { BudgetBuilder } from '../../src/app/builder/Budget.builder';
+import { Budget, PrismaClient, User } from '@prisma/client';
+import { UserBuilder } from '../../tests/builder/User.builder';
+import { BudgetBuilder } from '../../tests/builder/Budget.builder';
 
 const prisma = new PrismaClient();
 
 async function seed() {
   try {
     await resetDB();
-    await seedPositions();
     await seedUser();
     await seedBudget();
   } catch (error: unknown) {
@@ -21,28 +19,6 @@ async function seed() {
 async function resetDB() {
   await prisma.position.deleteMany();
   await prisma.user.deleteMany();
-}
-
-async function seedPositions() {
-  const positions: Position[] = [
-    new PositionBuilder().build(),
-    new PositionBuilder().build({
-      id: 2,
-      title: 'Book',
-      category: ['literature'],
-      value: 25,
-    }),
-    new PositionBuilder().build({
-      id: 3,
-      title: 'Tea',
-      category: ['treat', 'joy'],
-      value: 10,
-    }),
-  ];
-
-  await prisma.position.createMany({
-    data: positions,
-  });
 }
 
 async function seedUser() {

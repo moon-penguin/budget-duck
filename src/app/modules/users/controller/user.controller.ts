@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { UserRepository } from '../repository/user.repository';
 
-export class UsersController {
+export class UserController {
   private userRepository: UserRepository;
 
   constructor(repository: UserRepository) {

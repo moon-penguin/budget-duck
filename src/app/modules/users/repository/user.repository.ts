@@ -1,6 +1,6 @@
 import { PrismaClient, User } from '@prisma/client';
-import { logError } from '../utils/logError.utils';
-import { handlePrismaError } from '../utils/handlePrimaError.util';
+import { logError } from '../../../shared/utils/logError.utils';
+import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
 import { hash } from 'bcrypt';
 
 export class UserRepository {
