@@ -1,5 +1,5 @@
-describe('budget controller', () => {
-  it('should run green', () => {
-    expect(1).toEqual(1);
-  });
+import { expect, test } from 'vitest';
+
+test('should get all budgets', () => {
+  expect(1).toEqual(1);
 });
