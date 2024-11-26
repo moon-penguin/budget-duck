@@ -17,8 +17,8 @@ async function seed() {
 }
 
 async function resetDB() {
-  await prisma.position.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.budget.deleteMany();
 }
 
 async function seedUser() {
