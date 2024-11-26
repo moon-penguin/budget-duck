@@ -1,6 +1,6 @@
 import { Expense, PrismaClient } from '@prisma/client';
-import { logError } from '../utils/logError.utils';
-import { handlePrismaError } from '../utils/handlePrimaError.util';
+import { logError } from '../../../shared/utils/logError.utils';
+import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
 
 export class ExpenseRepository {
   private database: PrismaClient;

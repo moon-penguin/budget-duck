@@ -61,6 +61,10 @@ Optional:
 
 ### Testing
 
+- [ ] evaluate if I need jest for testing node-server-side (?)
+  - use tap
+  - use native node runner + assertions
+
 - [ ] look up how to set up tests with prisma
 - [ ] look up how to write essential unit tests with fastify
 - [ ] look up how to write essential integration test with fastify

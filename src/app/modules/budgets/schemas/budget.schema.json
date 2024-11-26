@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "$id": "schema:expense",
+  "$id": "schema:budget",
   "additionalProperties": false,
   "properties": {
     "id": {
@@ -37,5 +37,15 @@
       "format": "date-time"
     }
   },
-  "required": ["id", "title", "category", "value", "cycle", "type", "date", "createdAt", "updatedAt"]
+  "required": [
+    "id",
+    "title",
+    "category",
+    "value",
+    "cycle",
+    "type",
+    "date",
+    "createdAt",
+    "updatedAt"
+  ]
 }
