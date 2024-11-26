@@ -6,7 +6,15 @@ export default async function (fastify: FastifyInstance) {
   const userRepository = new UserRepository(fastify['prisma']);
   const userController = new UserController(userRepository);
 
-  fastify.post('/register', async (request, reply) => {
-    return await userController.registerUser(request, reply);
-  });
+  fastify.post(
+    '/register',
+    {
+      schema: {
+        body: fastify.getSchema('schema:user'),
+      },
+    },
+    async (request, reply) => {
+      return await userController.registerUser(request, reply);
+    }
+  );
 }

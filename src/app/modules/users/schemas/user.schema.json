@@ -9,6 +9,10 @@
     "name": {
       "type": "string"
     },
+    "password": {
+      "type": "string",
+      "format": "password"
+    },
     "email": {
       "type": "string",
       "format": "email"
@@ -21,5 +25,6 @@
       "type": "string",
       "format": "date-time"
     }
-  }
+  },
+  "required": ["id", "name", "password", "email", "createdAt", "updatedAt"]
 }
