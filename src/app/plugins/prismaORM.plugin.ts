@@ -1,18 +1,16 @@
 import { FastifyInstance } from 'fastify';
-import { PrismaClient } from '@prisma/client';
 import fp from 'fastify-plugin';
+import prismaClient from '../shared/database/prisma';
 
 export default fp(prismaORM);
 
 async function prismaORM(fastify: FastifyInstance) {
-  const prisma = new PrismaClient({ errorFormat: 'pretty' });
+  const prisma = prismaClient;
 
   fastify.addHook('onReady', async function connect() {
     await prisma.$connect();
     fastify.log.info('[ PRISMA ORM ] database connection successful');
   });
-
-  fastify.decorate('prisma', prisma);
 
   fastify.addHook('onClose', async function disconnect() {
     await prisma.$disconnect();
