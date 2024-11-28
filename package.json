@@ -9,6 +9,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "vitest run",
+    "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "nx lint",
     "format:check": "nx format:check",
