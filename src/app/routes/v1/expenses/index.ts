@@ -1,9 +1,10 @@
 import { FastifyInstance } from 'fastify';
 import { ExpenseRepository } from '../../../modules/expenses/repository/expense.repository';
 import { ExpensesController } from '../../../modules/expenses/controller/expenses.controller';
+import prismaClient from '../../../shared/database/prisma';
 
 export default async function (fastify: FastifyInstance) {
-  const expensesRepository = new ExpenseRepository(fastify['prisma']);
+  const expensesRepository = new ExpenseRepository(prismaClient);
   const expensesController = new ExpensesController(expensesRepository);
 
   fastify.get('', async (request, reply) => {

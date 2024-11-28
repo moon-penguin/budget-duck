@@ -15,22 +15,13 @@ const swaggerConfig: Partial<OpenAPIV3.Document | OpenAPIV3_1.Document> = {
   },
   servers: [
     {
-      url: 'http://localhost:{port}/{basePath}',
+      url: 'http://localhost:3000/api',
       description: 'Local development Server',
-
-      variables: {
-        port: {
-          default: '3000',
-        },
-        basePath: {
-          default: 'api',
-        },
-      },
     },
   ],
   externalDocs: {
-    url: 'https://swagger.io',
-    description: 'Find more info here',
+    url: 'https://github.com/moon-penguin/budget-duck',
+    description: 'Github Repository of Budget Duck 🦆',
   },
 };
 

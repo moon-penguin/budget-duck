@@ -18,12 +18,11 @@ export class UserController {
       const existingUser = await this.userRepository.findUser(reqUser);
 
       if (existingUser) {
-        reply.statusCode = 409;
-        throw new Error('User already exists');
+        reply.conflict();
+      } else {
+        await this.userRepository.create(reqUser);
+        reply.statusCode = 201;
       }
-
-      await this.userRepository.create(reqUser);
-      reply.statusCode = 201;
     } catch (error: unknown) {
       if (error instanceof Error) {
         reply.internalServerError();

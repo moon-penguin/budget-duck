@@ -16,14 +16,9 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
     options: { ...opts },
   });
 
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'swagger'),
-    options: { ...opts },
-  });
-
-  fastify.register(AutoLoad, {
+  /*fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: { prefix: 'api', ...opts },
     ignoreFilter: 'positions',
-  });
+  });*/
 }
