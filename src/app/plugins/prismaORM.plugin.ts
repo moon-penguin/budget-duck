@@ -9,11 +9,11 @@ async function prismaORM(fastify: FastifyInstance) {
 
   fastify.addHook('onReady', async function connect() {
     await prisma.$connect();
-    fastify.log.info('[ PRISMA ORM ] database connection successful');
+    fastify.log.info('[ PRISMA ORM ] connection successful');
   });
 
   fastify.addHook('onClose', async function disconnect() {
     await prisma.$disconnect();
-    fastify.log.info('[ PRISMA ORM ] database connection closed');
+    fastify.log.info('[ PRISMA ORM ] connection closed');
   });
 }
