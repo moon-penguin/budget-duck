@@ -44,6 +44,20 @@ export class ExpensesController {
     }
   }
 
+  async findExpensesOfCurrentMonth(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<Expense[]> {
+    try {
+      const currentMonth = new Date(request.headers.date);
+      return await this.expenseRepository.findByMonth(currentMonth);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.internalServerError();
+      }
+    }
+  }
+
   async createExpense(request: FastifyRequest, reply: FastifyReply) {
     try {
       const reqExpense = request.body as Expense;
