@@ -7,13 +7,9 @@ export default async function (fastify: FastifyInstance) {
   const budgetRepository = new BudgetRepository(prismaClient);
   const budgetController = new BudgetController(budgetRepository);
 
-  fastify.get('', async (request, reply) => {
-    return await budgetController.getAll(request, reply);
-  });
-
-  fastify.get('/:id', async (request, reply) => {
-    return await budgetController.getById(request, reply);
-  });
+  /*
+    CREATE
+   */
 
   fastify.post(
     '',
@@ -23,13 +19,37 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await budgetController.create(request, reply);
+      return await budgetController.createBudget(request, reply);
     }
   );
 
-  fastify.put('/:id', async (request, reply) => {
-    return await budgetController.update(request, reply);
+  /*
+    READ
+   */
+
+  fastify.get('', async (request, reply) => {
+    return await budgetController.findAllBudgets(request, reply);
   });
+
+  fastify.get('/:id', async (request, reply) => {
+    return await budgetController.findBudgetById(request, reply);
+  });
+
+  fastify.get('/current-month', async (request, reply) => {
+    return await budgetController.findBudgetsOfCurrentMonth(request, reply);
+  });
+
+  /*
+    UPDATE
+   */
+
+  fastify.put('/:id', async (request, reply) => {
+    return await budgetController.updateBudget(request, reply);
+  });
+
+  /*
+    DELETE
+   */
 
   fastify.delete(
     '/:id',
@@ -39,7 +59,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await budgetController.delete(request, reply);
+      return await budgetController.deleteBudget(request, reply);
     }
   );
 }
