@@ -7,13 +7,9 @@ export default async function (fastify: FastifyInstance) {
   const expensesRepository = new ExpenseRepository(prismaClient);
   const expensesController = new ExpensesController(expensesRepository);
 
-  fastify.get('', async (request, reply) => {
-    return await expensesController.findAllExpenses(request, reply);
-  });
-
-  fastify.get('/:id', async (request, reply) => {
-    return await expensesController.findExpenseById(request, reply);
-  });
+  /*
+    CREATE
+   */
 
   fastify.post(
     '',
@@ -27,9 +23,33 @@ export default async function (fastify: FastifyInstance) {
     }
   );
 
+  /*
+    READ
+   */
+
+  fastify.get('', async (request, reply) => {
+    return await expensesController.findAllExpenses(request, reply);
+  });
+
+  fastify.get('/:id', async (request, reply) => {
+    return await expensesController.findExpenseById(request, reply);
+  });
+
+  fastify.get('/current-month', async (request, reply) => {
+    return await expensesController.findExpensesOfCurrentMonth(request, reply);
+  });
+
+  /*
+    UPDATE
+   */
+
   fastify.put('/:id', async (request, reply) => {
     return await expensesController.updateExpense(request, reply);
   });
+
+  /*
+    DELETE
+   */
 
   fastify.delete('/:id', async (request, reply) => {
     return await expensesController.deleteExpense(request, reply);

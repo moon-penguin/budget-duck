@@ -1,6 +1,7 @@
 import { Expense, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
 import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
+import { lastDayOfMonth, startOfMonth } from 'date-fns';
 
 export class ExpenseRepository {
   private database: PrismaClient;
@@ -65,6 +66,25 @@ export class ExpenseRepository {
       return await this.database.expense.delete({
         where: {
           id: expense.id,
+        },
+      });
+    } catch (error: unknown) {
+      logError(error, 'expense repository');
+      handlePrismaError(error);
+    }
+  }
+
+  async findByMonth(month: Date): Promise<Expense[]> {
+    const firstDayOfCurrentMonth = startOfMonth(month);
+    const lastDayOfCurrentMonth = lastDayOfMonth(month);
+
+    try {
+      return this.database.expense.findMany({
+        where: {
+          date: {
+            gte: firstDayOfCurrentMonth,
+            lte: lastDayOfCurrentMonth,
+          },
         },
       });
     } catch (error: unknown) {
