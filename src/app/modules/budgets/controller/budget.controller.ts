@@ -9,7 +9,7 @@ export class BudgetController {
     this.budgetRepository = repository;
   }
 
-  async getAll(
+  async findAllBudgets(
     request: FastifyRequest,
     reply: FastifyReply
   ): Promise<Budget[]> {
@@ -23,7 +23,10 @@ export class BudgetController {
     }
   }
 
-  async getById(request: FastifyRequest, reply: FastifyReply): Promise<Budget> {
+  async findBudgetById(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<Budget> {
     const id = Number(request.params['id']);
 
     try {
@@ -42,7 +45,21 @@ export class BudgetController {
     }
   }
 
-  async create(request: FastifyRequest, reply: FastifyReply) {
+  async findBudgetsOfCurrentMonth(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<Budget[]> {
+    try {
+      const currentMonth = new Date(request.headers.date);
+      return await this.budgetRepository.findByMonth(currentMonth);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        reply.internalServerError();
+      }
+    }
+  }
+
+  async createBudget(request: FastifyRequest, reply: FastifyReply) {
     const reqBudget = request.body as Budget;
 
     try {
@@ -55,7 +72,7 @@ export class BudgetController {
     }
   }
 
-  async update(request: FastifyRequest, reply: FastifyReply) {
+  async updateBudget(request: FastifyRequest, reply: FastifyReply) {
     const id = Number(request.params['id']);
     const reqBudget = request.body as Budget;
 
@@ -73,7 +90,7 @@ export class BudgetController {
     }
   }
 
-  async delete(request: FastifyRequest, reply: FastifyReply) {
+  async deleteBudget(request: FastifyRequest, reply: FastifyReply) {
     const id = Number(request.params['id']);
     const reqBudget = request.body as Budget;
 

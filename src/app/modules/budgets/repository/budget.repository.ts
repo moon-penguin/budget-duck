@@ -1,6 +1,7 @@
 import { Budget, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
 import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
+import { lastDayOfMonth, startOfMonth } from 'date-fns';
 
 export class BudgetRepository {
   private database: PrismaClient;
@@ -69,6 +70,25 @@ export class BudgetRepository {
       });
     } catch (error: unknown) {
       logError(error, 'budget repository');
+      handlePrismaError(error);
+    }
+  }
+
+  async findByMonth(month: Date): Promise<Budget[]> {
+    const firstDayOfCurrentMonth = startOfMonth(month);
+    const lastDayOfCurrentMonth = lastDayOfMonth(month);
+
+    try {
+      return this.database.budget.findMany({
+        where: {
+          date: {
+            gte: firstDayOfCurrentMonth,
+            lte: lastDayOfCurrentMonth,
+          },
+        },
+      });
+    } catch (error: unknown) {
+      logError(error, 'expense repository');
       handlePrismaError(error);
     }
   }
