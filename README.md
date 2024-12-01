@@ -1,37 +1,11 @@
 # BackendApi for Budget Duck
 
-# budget duck description
+# budget duck documentation
 
-Idee/ User-Stories:
-- nachempfunden, ähnlich wie ein Haushaltsbuch
-- Übersicht über monatliche Ein- und Ausgaben
-- ich möchte meine Ein- und Ausgaben kategorisieren können
-
-- ich möchte die Trends von meinen Ein- und Ausgaben einsehen können (grafische Darstellung)
-  - Darstellung von Trends soll dynamisch, selbst ausgesucht werden
-
-- ich möchte das regelmäßige Ein- und Ausgaben automatisch für die kommenden Zyklen übernommen
-  - Gehalt (monatlich) soll jeden Monat als Einnahme aufgeführt werden
-
-- ich möchte eine Beschreibung von einer Ein- und Ausgabe haben
-- ich möchte einen dritten Typen neben Ein- und Ausgaben haben -> Investment/ Sparvermögen
-
-- ich möchte meine Ausgaben planen können
-  - z. B. ich plane für August 400 Eur für meinen Urlaub ein (Plan-Ausgabe, Schätzung, Blocker)
-
-- ich möchte in meinen Ein-und Ausgabenotizen vor und zurück blättern können
-  - z. B. heute ist November 2024 und ich habe Urlaub Ausgabe für August 2025 eingetragen
-  - ich möchte diese Ausgabe einsehen können, sobald sie eingetragen ist
+## Documentation
+[Budget Duck Documentation and Blog Repository](https://github.com/moon-penguin/documentation)
 
 
-Technische/Ideen:
-- Documentation von Domäne, Beschreibung evtl. auf einer gesonderten Docu-Seite (eigenes Repo)
-- Todo Liste für unser Projekt
-- Kleine Beschreibung, wie man Front- und Backend bei sich selbst aufsetzen und zum Laufen bringen kann
-
-Workflow:
-- github
-  - Pull-Request bei Änderungen stellen, wenn man im Repo von der anderen Person arbeitet
 
 ### ToDos
 
