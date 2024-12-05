@@ -2,7 +2,7 @@ import { Type } from '@sinclair/typebox';
 import {
   TransactionCycle,
   TransactionType,
-} from '../../../budgets/domain/schemas/BudgetSchema';
+} from '../../../../shared/types/transaction.type';
 
 export const ExpenseSchema = Type.Object(
   {
@@ -25,5 +25,6 @@ export const ExpenseSchema = Type.Object(
   {
     $id: 'schema:expense',
     additionalProperties: false,
+    title: 'Expense',
   }
 );

@@ -1,19 +1,8 @@
 import { Type } from '@sinclair/typebox';
-
-enum CycleEnum {
-  ONCE = 'ONCE',
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
-}
-
-enum TransactionTypeEnum {
-  INCOME = 'INCOME',
-  EXPENSE = 'EXPENSE',
-}
-
-export const TransactionCycle = Type.Enum(CycleEnum);
-export const TransactionType = Type.Enum(TransactionTypeEnum);
+import {
+  TransactionCycle,
+  TransactionType,
+} from '../../../../shared/types/transaction.type';
 
 export const BudgetSchema = Type.Object(
   {
@@ -33,5 +22,9 @@ export const BudgetSchema = Type.Object(
       format: 'date-time',
     }),
   },
-  { $id: 'schema:budget', additionalProperties: false }
+  {
+    $id: 'schema:budget',
+    additionalProperties: false,
+    title: 'Budget',
+  }
 );

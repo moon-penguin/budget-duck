@@ -9,6 +9,9 @@
 
 ### ToDos
 
+- [ ] update repositories to CRUD budget and expenses with user
+- [ ] controller should return dtos
+
 - [ ] Authentication + Authorization for Users
   - [ ] add user model with password
   - [ ] hash and salt passwords and save it in database
@@ -18,11 +21,6 @@
 
 
 - [ ] create error classes for application-error, database-error, user-error (better error handling)
-
-- [ ] decouple dependency from prisma model
-  - [ ] create domain directory with budget and expenses
-
-- [ ] generate schema from types -> fastify typebox
 
 - [ ] secure logging, hide sensitive data in req bodies and headers - redaction
 
