@@ -22,6 +22,10 @@
 - [ ] decouple dependency from prisma model
   - [ ] create domain directory with budget and expenses
 
+- [ ] generate schema from types -> fastify typebox
+
+- [ ] secure logging, hide sensitive data in req bodies and headers - redaction
+
 ### Testing
 
 - [ ] evaluate if I need jest for testing node-server-side (?)

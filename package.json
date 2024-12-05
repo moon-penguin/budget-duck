@@ -16,6 +16,7 @@
     "db:migragte": "npx prisma migrate dev",
     "db:ui": "npx prisma studio",
     "db:seed": "npx prisma db seed",
+    "db:format": "npx prisma format",
     "prepare": "husky"
   },
   "private": true,
