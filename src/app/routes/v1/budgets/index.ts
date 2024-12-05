@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { BudgetRepository } from '../../../modules/budgets/repository/budget.repository';
 import { BudgetController } from '../../../modules/budgets/controller/budget.controller';
 import prismaClient from '../../../shared/database/prisma';
+import { BudgetSchema } from '../../../modules/budgets/domain/schemas/BudgetSchema';
 
 export default async function (fastify: FastifyInstance) {
   const budgetRepository = new BudgetRepository(prismaClient);
@@ -15,7 +16,7 @@ export default async function (fastify: FastifyInstance) {
     '',
     {
       schema: {
-        body: fastify.getSchema('schema:budget'),
+        body: BudgetSchema,
       },
     },
     async (request, reply) => {
@@ -43,9 +44,17 @@ export default async function (fastify: FastifyInstance) {
     UPDATE
    */
 
-  fastify.put('/:id', async (request, reply) => {
-    return await budgetController.updateBudget(request, reply);
-  });
+  fastify.put(
+    '/:id',
+    {
+      schema: {
+        body: BudgetSchema,
+      },
+    },
+    async (request, reply) => {
+      return await budgetController.updateBudget(request, reply);
+    }
+  );
 
   /*
     DELETE
@@ -55,7 +64,7 @@ export default async function (fastify: FastifyInstance) {
     '/:id',
     {
       schema: {
-        body: fastify.getSchema('schema:budget'),
+        body: BudgetSchema,
       },
     },
     async (request, reply) => {

@@ -1,1 +1,4 @@
-// TODO: typebox description of dto and generate schema
+import { Static } from '@sinclair/typebox';
+import { BudgetSchema } from '../schemas/BudgetSchema';
+
+export type BudgetDto = Static<typeof BudgetSchema>;

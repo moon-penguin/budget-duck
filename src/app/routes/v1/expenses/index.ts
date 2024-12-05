@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { ExpenseRepository } from '../../../modules/expenses/repository/expense.repository';
 import { ExpensesController } from '../../../modules/expenses/controller/expenses.controller';
 import prismaClient from '../../../shared/database/prisma';
+import { ExpenseSchema } from '../../../modules/expenses/domain/schemas/ExpenseSchema';
 
 export default async function (fastify: FastifyInstance) {
   const expensesRepository = new ExpenseRepository(prismaClient);
@@ -15,7 +16,7 @@ export default async function (fastify: FastifyInstance) {
     '',
     {
       schema: {
-        body: fastify.getSchema('schema:expense'),
+        body: ExpenseSchema,
       },
     },
     async (request, reply) => {
@@ -43,15 +44,31 @@ export default async function (fastify: FastifyInstance) {
     UPDATE
    */
 
-  fastify.put('/:id', async (request, reply) => {
-    return await expensesController.updateExpense(request, reply);
-  });
+  fastify.put(
+    '/:id',
+    {
+      schema: {
+        body: ExpenseSchema,
+      },
+    },
+    async (request, reply) => {
+      return await expensesController.updateExpense(request, reply);
+    }
+  );
 
   /*
     DELETE
    */
 
-  fastify.delete('/:id', async (request, reply) => {
-    return await expensesController.deleteExpense(request, reply);
-  });
+  fastify.delete(
+    '/:id',
+    {
+      schema: {
+        body: ExpenseSchema,
+      },
+    },
+    async (request, reply) => {
+      return await expensesController.deleteExpense(request, reply);
+    }
+  );
 }

@@ -7,11 +7,6 @@ export interface AppOptions {}
 
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
   fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'modules'),
-    indexPattern: /schema.loader.ts/,
-  });
-
-  fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
     options: { ...opts },
   });

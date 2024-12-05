@@ -3,13 +3,14 @@ import { app } from './app/app';
 import applicationConfig from './app/configuration/application.config';
 import { pinoLogger } from './app/shared/utils/logger.utils';
 import closeWithGrace from 'close-with-grace';
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 
 const host = applicationConfig.host;
 const port = applicationConfig.port;
 
 const server = Fastify({
   logger: pinoLogger,
-});
+}).withTypeProvider<TypeBoxTypeProvider>();
 
 server.register(app);
 
