@@ -20,5 +20,6 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
     dir: path.join(__dirname, 'routes'),
     options: { prefix: 'api', ...opts },
     ignoreFilter: 'positions',
+    routeParams: true,
   });
 }

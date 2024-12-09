@@ -1,17 +1,16 @@
-import { Type } from '@sinclair/typebox';
+import { TLiteral, Type } from '@sinclair/typebox';
 
-enum CycleEnum {
-  ONCE = 'ONCE',
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
-  YEARLY = 'YEARLY',
+const Cycles = ['ONCE', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'] as const;
+const Types = ['INCOME', 'EXPENSE'] as const;
+
+const CycleLiterals = buildTypeLiteralsOf(Cycles);
+const TypeLiterals = buildTypeLiteralsOf(Types);
+
+export const TransactionCycle = Type.Union(CycleLiterals);
+export const TransactionType = Type.Union(TypeLiterals);
+
+function buildTypeLiteralsOf<T extends ReadonlyArray<string>, K extends number>(
+  list: T
+) {
+  return list.map((literal) => Type.Literal(literal)) as Array<TLiteral<T[K]>>;
 }
-
-enum TransactionTypeEnum {
-  INCOME = 'INCOME',
-  EXPENSE = 'EXPENSE',
-}
-
-export const TransactionCycle = Type.Enum(CycleEnum);
-export const TransactionType = Type.Enum(TransactionTypeEnum);

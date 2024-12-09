@@ -9,8 +9,15 @@
 
 ### ToDos
 
-- [ ] update repositories to CRUD budget and expenses with user
+- [ ] update repositories
+  - budget and expense are tied to a specific user
+  - repository should import database instance (empty constructor)
+  - 
+
+
 - [ ] controller should return dtos
+  - [x] budget controller returns dtos
+  - [ ] expense controller returns dtos
 
 - [ ] Authentication + Authorization for Users
   - [ ] add user model with password
@@ -21,7 +28,6 @@
 
 
 - [ ] create error classes for application-error, database-error, user-error (better error handling)
-
 - [ ] secure logging, hide sensitive data in req bodies and headers - redaction
 
 ### Testing
