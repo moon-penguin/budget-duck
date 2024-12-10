@@ -17,7 +17,7 @@
 
 - [ ] controller should return dtos
   - [x] budget controller returns dtos
-  - [ ] expense controller returns dtos
+  - [x] expense controller returns dtos
 
 - [ ] Authentication + Authorization for Users
   - [ ] add user model with password

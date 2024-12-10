@@ -1,6 +1,6 @@
 import { PrismaClient, User } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
-import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
+import { handlePrismaError } from '../../../shared/utils/handlePrismaError';
 import { hash } from 'bcrypt';
 import prismaClient from '../../../shared/database/prisma';
 

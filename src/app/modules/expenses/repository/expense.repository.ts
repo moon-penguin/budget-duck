@@ -1,6 +1,6 @@
 import { Expense, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
-import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
+import { handlePrismaError } from '../../../shared/utils/handlePrismaError';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import prismaClient from '../../../shared/database/prisma';
 
