@@ -30,4 +30,8 @@ export class BudgetMapper {
       userId: userId,
     };
   }
+
+  static toDtos(budgets: Budget[]): BudgetDto[] {
+    return budgets.map((budget) => this.toDto(budget));
+  }
 }

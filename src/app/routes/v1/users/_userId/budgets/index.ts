@@ -1,13 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import { BudgetRepository } from '../../../../../modules/budgets/repository/budget.repository';
 import { BudgetController } from '../../../../../modules/budgets/controller/budget.controller';
-import prismaClient from '../../../../../shared/database/prisma';
 import { BudgetSchema } from '../../../../../modules/budgets/domain/schemas/budget.schema';
 import { BudgetsResponseSchema } from '../../../../../modules/budgets/domain/schemas/budgetsResponse.schema';
 
 export default async function (fastify: FastifyInstance) {
-  const budgetRepository = new BudgetRepository(prismaClient);
-  const budgetController = new BudgetController(budgetRepository);
+  const budgetController = new BudgetController();
 
   /*
     CREATE

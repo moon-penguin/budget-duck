@@ -2,12 +2,13 @@ import { Budget, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
 import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
+import prismaClient from '../../../shared/database/prisma';
 
 export class BudgetRepository {
   private database: PrismaClient;
 
-  constructor(database: PrismaClient) {
-    this.database = database;
+  constructor() {
+    this.database = prismaClient;
   }
 
   async findAll(userId: string): Promise<Budget[]> {
@@ -28,7 +29,7 @@ export class BudgetRepository {
     }
   }
 
-  async findById(id: number, userId: string): Promise<Budget> {
+  async findById(id: number, userId: string): Promise<Budget | null> {
     try {
       return await this.database.budget.findUnique({
         where: {
