@@ -5,8 +5,8 @@ import { UserRepository } from '../repository/user.repository';
 export class UserController {
   private userRepository: UserRepository;
 
-  constructor(repository: UserRepository) {
-    this.userRepository = repository;
+  constructor() {
+    this.userRepository = new UserRepository();
   }
 
   async registerUser(

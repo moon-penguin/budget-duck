@@ -8,7 +8,7 @@ export interface AppOptions {}
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'modules'),
-    indexPattern: /schema.loader.ts/,
+    indexPattern: /loader.schema.ts/,
   });
 
   fastify.register(AutoLoad, {
@@ -20,5 +20,6 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
     dir: path.join(__dirname, 'routes'),
     options: { prefix: 'api', ...opts },
     ignoreFilter: 'positions',
+    routeParams: true,
   });
 }

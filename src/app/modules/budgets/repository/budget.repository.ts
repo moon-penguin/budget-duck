@@ -2,19 +2,25 @@ import { Budget, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
 import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
+import prismaClient from '../../../shared/database/prisma';
 
 export class BudgetRepository {
   private database: PrismaClient;
 
-  constructor(database: PrismaClient) {
-    this.database = database;
+  constructor() {
+    this.database = prismaClient;
   }
 
-  async findAll(): Promise<Budget[]> {
+  async findAll(userId: string): Promise<Budget[]> {
     try {
       return await this.database.budget.findMany({
         orderBy: {
           id: 'asc',
+        },
+        where: {
+          user: {
+            id: userId,
+          },
         },
       });
     } catch (error: unknown) {
@@ -23,11 +29,16 @@ export class BudgetRepository {
     }
   }
 
-  async findById(id: number): Promise<Budget> {
+  async findById(id: number, userId: string): Promise<Budget | null> {
     try {
       return await this.database.budget.findUnique({
         where: {
           id: id,
+          AND: {
+            user: {
+              id: userId,
+            },
+          },
         },
       });
     } catch (error: unknown) {
@@ -74,7 +85,7 @@ export class BudgetRepository {
     }
   }
 
-  async findByMonth(month: Date): Promise<Budget[]> {
+  async findByMonth(month: Date, userId: string): Promise<Budget[]> {
     const firstDayOfCurrentMonth = startOfMonth(month);
     const lastDayOfCurrentMonth = lastDayOfMonth(month);
 
@@ -84,6 +95,11 @@ export class BudgetRepository {
           date: {
             gte: firstDayOfCurrentMonth,
             lte: lastDayOfCurrentMonth,
+          },
+          AND: {
+            user: {
+              id: userId,
+            },
           },
         },
       });

@@ -9,6 +9,16 @@
 
 ### ToDos
 
+- [ ] update repositories
+  - budget and expense are tied to a specific user
+  - repository should import database instance (empty constructor)
+  - 
+
+
+- [ ] controller should return dtos
+  - [x] budget controller returns dtos
+  - [ ] expense controller returns dtos
+
 - [ ] Authentication + Authorization for Users
   - [ ] add user model with password
   - [ ] hash and salt passwords and save it in database
@@ -18,9 +28,7 @@
 
 
 - [ ] create error classes for application-error, database-error, user-error (better error handling)
-
-- [ ] decouple dependency from prisma model
-  - [ ] create domain directory with budget and expenses
+- [ ] secure logging, hide sensitive data in req bodies and headers - redaction
 
 ### Testing
 

@@ -2,19 +2,25 @@ import { Expense, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
 import { handlePrismaError } from '../../../shared/utils/handlePrimaError.util';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
+import prismaClient from '../../../shared/database/prisma';
 
 export class ExpenseRepository {
   private database: PrismaClient;
 
-  constructor(database: PrismaClient) {
-    this.database = database;
+  constructor() {
+    this.database = prismaClient;
   }
 
-  async findAll(): Promise<Expense[]> {
+  async findAll(userId: string): Promise<Expense[]> {
     try {
       return await this.database.expense.findMany({
         orderBy: {
           id: 'asc',
+        },
+        where: {
+          user: {
+            id: userId,
+          },
         },
       });
     } catch (error: unknown) {
@@ -23,11 +29,16 @@ export class ExpenseRepository {
     }
   }
 
-  async findById(id: number): Promise<Expense> {
+  async findById(id: number, userId: string): Promise<Expense | null> {
     try {
       return await this.database.expense.findUnique({
         where: {
           id: id,
+          AND: {
+            user: {
+              id: userId,
+            },
+          },
         },
       });
     } catch (error: unknown) {
@@ -74,7 +85,7 @@ export class ExpenseRepository {
     }
   }
 
-  async findByMonth(month: Date): Promise<Expense[]> {
+  async findByMonth(month: Date, userId: string): Promise<Expense[]> {
     const firstDayOfCurrentMonth = startOfMonth(month);
     const lastDayOfCurrentMonth = lastDayOfMonth(month);
 
@@ -84,6 +95,11 @@ export class ExpenseRepository {
           date: {
             gte: firstDayOfCurrentMonth,
             lte: lastDayOfCurrentMonth,
+          },
+          AND: {
+            user: {
+              id: userId,
+            },
           },
         },
       });

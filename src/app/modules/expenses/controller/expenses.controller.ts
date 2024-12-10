@@ -1,21 +1,32 @@
 import { ExpenseRepository } from '../repository/expense.repository';
-import { Expense } from '@prisma/client';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { UserService } from '../../users/services/user.service';
+import { ExpenseMapper } from '../domain/mapper/expense.mapper';
+import { ExpenseDto } from '../domain/dto/ExpenseDto';
 
 export class ExpensesController {
   private expenseRepository: ExpenseRepository;
+  private userService: UserService;
 
-  constructor(repository: ExpenseRepository) {
-    this.expenseRepository = repository;
+  constructor() {
+    this.expenseRepository = new ExpenseRepository();
+    this.userService = new UserService();
   }
 
   async findAllExpenses(
     request: FastifyRequest,
     reply: FastifyReply
-  ): Promise<Expense[]> {
+  ): Promise<ExpenseDto[]> {
     try {
-      reply.statusCode = 202;
-      return await this.expenseRepository.findAll();
+      const userId = request.params['userId'];
+
+      if (await this.userService.userExists(userId)) {
+        reply.statusCode = 202;
+        const entities = await this.expenseRepository.findAll(userId);
+        return ExpenseMapper.toDtos(entities);
+      } else {
+        reply.notFound();
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         reply.internalServerError();
@@ -26,16 +37,21 @@ export class ExpensesController {
   async findExpenseById(
     request: FastifyRequest,
     reply: FastifyReply
-  ): Promise<Expense> {
+  ): Promise<ExpenseDto> {
     try {
       const id = Number(request.params['id']);
-      const expense = await this.expenseRepository.findById(id);
+      const userId = request.params['userId'];
 
-      if (expense) {
-        reply.statusCode = 200;
-        return expense;
+      if (await this.userService.userExists(userId)) {
+        const expense = await this.expenseRepository.findById(id, userId);
+        if (expense) {
+          reply.statusCode = 200;
+          return ExpenseMapper.toDto(expense);
+        } else {
+          reply.notFound();
+        }
       } else {
-        reply.notFound();
+        reply.conflict();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -47,10 +63,22 @@ export class ExpensesController {
   async findExpensesOfCurrentMonth(
     request: FastifyRequest,
     reply: FastifyReply
-  ): Promise<Expense[]> {
+  ): Promise<ExpenseDto[]> {
     try {
       const currentMonth = new Date(request.headers.date);
-      return await this.expenseRepository.findByMonth(currentMonth);
+      const userId = request.params['userId'];
+
+      if (await this.userService.userExists(userId)) {
+        const entities = await this.expenseRepository.findByMonth(
+          currentMonth,
+          userId
+        );
+
+        reply.statusCode = 202;
+        return ExpenseMapper.toDtos(entities);
+      } else {
+        reply.conflict();
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         reply.internalServerError();
@@ -60,14 +88,16 @@ export class ExpensesController {
 
   async createExpense(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const reqExpense = request.body as Expense;
-      await this.expenseRepository.create({
-        ...reqExpense,
-        date: new Date(reqExpense.date),
-        createdAt: new Date(reqExpense.createdAt),
-        updatedAt: new Date(reqExpense.updatedAt),
-      });
-      reply.statusCode = 202;
+      const expenseDto = request.body as ExpenseDto;
+      const userId = request.params['userId'];
+
+      if (await this.userService.userExists(userId)) {
+        const entity = ExpenseMapper.toEntity(expenseDto, userId);
+        await this.expenseRepository.create(entity);
+        reply.statusCode = 202;
+      } else {
+        reply.conflict();
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         reply.internalServerError(error.message);
@@ -78,23 +108,19 @@ export class ExpensesController {
   async updateExpense(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
-      const reqExpense = request.body as Expense;
+      const userId = request.params['userId'];
+      const expenseDto = request.body as ExpenseDto;
 
-      if (id !== reqExpense.id) {
+      if (id !== expenseDto.id) {
         return reply.badRequest();
       }
 
-      const updatedExpense = await this.expenseRepository.update({
-        ...reqExpense,
-        date: new Date(reqExpense.date),
-        createdAt: new Date(reqExpense.createdAt),
-        updatedAt: new Date(reqExpense.updatedAt),
-      });
-
-      if (updatedExpense) {
+      if (await this.userService.userExists(userId)) {
+        const entity = ExpenseMapper.toEntity(expenseDto, userId);
+        await this.expenseRepository.update(entity);
         reply.statusCode = 202;
       } else {
-        reply.notFound();
+        reply.conflict();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -106,19 +132,20 @@ export class ExpensesController {
   async deleteExpense(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
-      const reqExpense = request.body as Expense;
+      const expenseDto = request.body as ExpenseDto;
+      const userId = request.params['userId'];
 
-      if (id !== reqExpense.id) {
+      if (id !== expenseDto.id) {
         return reply.badRequest();
       }
 
-      await this.expenseRepository.delete({
-        ...reqExpense,
-        date: new Date(reqExpense.date),
-        createdAt: new Date(reqExpense.createdAt),
-        updatedAt: new Date(reqExpense.updatedAt),
-      });
-      reply.statusCode = 202;
+      if (await this.userService.userExists(userId)) {
+        const entity = ExpenseMapper.toEntity(expenseDto, userId);
+        await this.expenseRepository.delete(entity);
+        reply.statusCode = 202;
+      } else {
+        reply.conflict();
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         reply.internalServerError();
