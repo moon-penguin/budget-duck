@@ -10,8 +10,8 @@ export const ExpenseSchema = Type.Object(
     title: Type.String(),
     category: Type.Array(Type.String()),
     value: Type.Number(),
-    cycle: Type.Enum(TransactionCycle),
-    type: Type.Enum(TransactionType),
+    cycle: TransactionCycle,
+    type: TransactionType,
     date: Type.String({
       format: 'date-time',
     }),
