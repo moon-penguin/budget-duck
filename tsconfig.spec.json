@@ -3,10 +3,9 @@
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
     "module": "commonjs",
-    "types": ["node", "vitest"]
+    "types": ["node"]
   },
   "include": [
-    "vitest.config.ts",
     "../tests/**/*.test.ts",
     "../tests/**/*.spec.ts",
     "../tests/**/*.d.ts"

@@ -8,9 +8,7 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test": "tap run",
     "lint": "nx lint",
     "format:check": "nx format:check",
     "db:migragte": "npx prisma migrate dev",
@@ -52,9 +50,9 @@
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@testcontainers/postgresql": "^10.16.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "~18.16.9",
-    "@vitest/coverage-v8": "^2.1.6",
     "esbuild": "^0.19.2",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^9.0.0",
@@ -62,11 +60,12 @@
     "nx": "19.8.3",
     "prettier": "^2.6.2",
     "prisma": "^5.21.1",
+    "tap": "^21.0.1",
+    "testcontainers": "^10.16.0",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.5.2",
-    "typescript-eslint": "^8.0.0",
-    "vitest": "^2.1.6"
+    "typescript-eslint": "^8.0.0"
   },
   "nx": {
     "includedScripts": []

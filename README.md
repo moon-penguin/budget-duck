@@ -9,16 +9,6 @@
 
 ### ToDos
 
-- [ ] update repositories
-  - budget and expense are tied to a specific user
-  - repository should import database instance (empty constructor)
-  - 
-
-
-- [ ] controller should return dtos
-  - [x] budget controller returns dtos
-  - [x] expense controller returns dtos
-
 - [ ] Authentication + Authorization for Users
   - [ ] add user model with password
   - [ ] hash and salt passwords and save it in database
@@ -32,13 +22,10 @@
 
 ### Testing
 
-- [ ] evaluate if I need jest for testing node-server-side (?)
-  - use tap
-  - use native node runner + assertions
-
-- [ ] look up how to set up tests with prisma
-- [ ] look up how to write essential unit tests with fastify
-- [ ] look up how to write essential integration test with fastify
+- [ ] config testcontainer for api integrationtests
+  - [x] install tap as testing framework
+  - [x] install testcontainer with postgres
+  - [ ] create server config to accept testcontainer as database
 
 ### Infrastructure
 
