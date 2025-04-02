@@ -8,6 +8,6 @@ export default fp(jwtAuth);
 // TODO: auth plugin with jwt token
 async function jwtAuth(fastify: FastifyInstance) {
   fastify.register(fastifyJwt, {
-    secret: applicationConfig.jwtSecret,
+    secret: applicationConfig.JWT_SECRET,
   });
 }

@@ -1,41 +1,46 @@
 import { FastifyInstance } from 'fastify';
-import { afterEach, beforeEach, equal, test } from 'tap';
-import { buildServer } from '../../helper/buildServer.helper';
+import t from 'tap';
 import { PrismaClient } from '@prisma/client';
+import {
+  initPostgresContainer,
+  initTestServer,
+} from '../../helper/test-env.setup';
+import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { BudgetBuilder } from '../../builder/Budget.builder';
 import { UserBuilder } from '../../builder/User.builder';
-import { setupPrismaTestContainer } from '../../helper/testContainer.helper';
+import { clearDatabase } from '../../helper/prisma-orm.helper';
 
+let postgresContainer: StartedPostgreSqlContainer;
 let server: FastifyInstance;
 let prisma: PrismaClient;
 
-beforeEach(async () => {
-  server = await buildServer();
-  prisma = await setupPrismaTestContainer();
+const userMock = new UserBuilder().build();
+const budgetMock = new BudgetBuilder().build({ userId: userMock.id });
 
-  await prisma.$connect();
+t.before(async () => {
+  const { container, prismaOrm } = await initPostgresContainer();
+  postgresContainer = container;
+  prisma = prismaOrm;
+
+  server = await initTestServer();
+
+  await prisma.user.create({ data: userMock });
+  await prisma.budget.create({ data: budgetMock });
 });
 
-afterEach(async () => {
+t.after(async () => {
+  await clearDatabase(prisma);
   await server.close();
-  await prisma.$disconnect();
+  await postgresContainer.stop();
 });
 
-// TODO: config to link server to testcontainer instance
-test('get all budgets of user', async () => {
+t.test('get all budgets of user', async () => {
   const response = await server.inject({
     method: 'GET',
     url: 'api/v1/users/1/budgets',
   });
 
-  await prisma.user.create({
-    data: new UserBuilder().build(),
-  });
-  await prisma.budget.create({
-    data: new BudgetBuilder().build({
-      title: 'Miau miau',
-    }),
-  });
+  const payload = response.json();
 
-  console.log(await prisma.budget.findMany());
+  t.equal(payload[0].id, budgetMock.id);
 });
