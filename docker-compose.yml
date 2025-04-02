@@ -1,11 +1,11 @@
-version: "1.0"
+version: '1.0'
 
 services:
   db:
     image: postgres
     restart: unless-stopped
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${DB_PORT}:5432
     hostname: postgres
     container_name: postgres
     environment:

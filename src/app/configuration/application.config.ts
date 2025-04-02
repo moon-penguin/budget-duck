@@ -1,10 +1,16 @@
-import * as process from 'node:process';
+import { ApplicationEnvironmentConfig } from './types/configuration.types';
 
-const applicationConfig = {
-  environment: process.env.NODE_ENV,
-  host: process.env.HOST ?? 'localhost',
-  port: Number(process.env.PORT) || 3000,
-  jwtSecret: process.env.JWT_SECRET,
+const applicationConfig: ApplicationEnvironmentConfig = {
+  HOST: 'localhost',
+  NODE_ENV: 'production',
+  PORT: 3000,
+  DB_HOST: 'localhost',
+  DB_NAME: 'budget_db',
+  DB_USER: 'admin',
+  DB_PASSWORD: 'test',
+  DB_PORT: 5432,
+  DATABASE_URL: 'postgresql://admin:test@localhost:5432/budget_db',
+  JWT_SECRET: 'secret',
 };
 
 export default applicationConfig;
