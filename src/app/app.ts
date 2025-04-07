@@ -6,20 +6,19 @@ import AutoLoad from '@fastify/autoload';
 export interface AppOptions {}
 
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'modules'),
-    indexPattern: /loader.schema.ts/,
-  });
-
-  fastify.register(AutoLoad, {
+  await fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
     options: { ...opts },
   });
 
-  fastify.register(AutoLoad, {
+  await fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'modules'),
+    indexPattern: /loader.schema.ts/,
+  });
+
+  await fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: { prefix: 'api', ...opts },
-    ignoreFilter: 'positions',
     routeParams: true,
   });
 }

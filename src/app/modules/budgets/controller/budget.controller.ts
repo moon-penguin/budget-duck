@@ -22,7 +22,7 @@ export class BudgetController {
 
       if (await this.userService.userExists(userId)) {
         const entities = await this.budgetRepository.findAll(userId);
-        reply.statusCode = 202;
+        reply.code(202);
         return BudgetMapper.toDtos(entities);
       } else {
         reply.notFound();
@@ -45,7 +45,7 @@ export class BudgetController {
       if (await this.userService.userExists(userId)) {
         const result = await this.budgetRepository.findById(id, userId);
         if (result) {
-          reply.statusCode = 202;
+          reply.code(200);
           return BudgetMapper.toDto(result);
         } else {
           reply.notFound();
@@ -92,7 +92,7 @@ export class BudgetController {
       if (await this.userService.userExists(userId)) {
         const entity = BudgetMapper.toEntity(reqBudget, userId);
         await this.budgetRepository.create(entity);
-        reply.statusCode = 201;
+        reply.code(201);
       } else {
         reply.conflict();
       }
@@ -116,7 +116,7 @@ export class BudgetController {
       if (await this.userService.userExists(userId)) {
         const entity = BudgetMapper.toEntity(reqBudget, userId);
         await this.budgetRepository.update(entity);
-        reply.statusCode = 202;
+        reply.code(202);
       } else {
         reply.conflict();
       }
@@ -140,7 +140,7 @@ export class BudgetController {
       if (await this.userService.userExists(userId)) {
         const entity = BudgetMapper.toEntity(reqBudget, userId);
         await this.budgetRepository.delete(entity);
-        reply.statusCode = 202;
+        reply.code(202);
       } else {
         reply.conflict();
       }
