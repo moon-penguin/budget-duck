@@ -1,0 +1,28 @@
+meta {
+  name: delete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/users/1/incomes/3
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": 3,
+    "title": "Netflix",
+    "category": [
+      "video",
+      "streaming"
+    ],
+    "value": 4,
+    "cycle": "MONTHLY",
+    "type": "INCOME",
+    "date": "2024-12-04T15:20:21.048Z",
+    "createdAt": "2024-12-04T15:20:21.048Z",
+    "updatedAt": "2024-12-04T15:19:11.655Z"
+  }
+}

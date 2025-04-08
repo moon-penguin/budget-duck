@@ -1,0 +1,22 @@
+meta {
+  name: register user
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "4",
+    "name": "Robby Puppa",
+    "password": "tests_password",
+    "email": "pups@rob.de",
+    "createdAt": "2024-11-24T00:00:00.000Z",
+    "updatedAt": "2024-11-24T00:00:00.000Z"
+  }
+}

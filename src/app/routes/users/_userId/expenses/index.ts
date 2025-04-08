@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import { ExpensesController } from '../../../../../modules/expenses/controller/expenses.controller';
-import { ExpenseSchema } from '../../../../../modules/expenses/domain/schemas/expense.schema';
-import { ExpensesResponseSchema } from '../../../../../modules/expenses/domain/schemas/expensesResponse.schema';
+import { ExpensesController } from '../../../../modules/expenses/controller/expenses.controller';
+import { ExpenseSchema } from '../../../../modules/expenses/domain/schemas/expense.schema';
+import { ExpensesResponseSchema } from '../../../../modules/expenses/domain/schemas/expensesResponse.schema';
 
 export default async function (fastify: FastifyInstance) {
   const expensesController = new ExpensesController();

@@ -73,6 +73,7 @@ export class IncomeController {
           currentMonth,
           userId
         );
+        reply.code(200);
         return IncomeMapper.toDtos(results);
       } else {
         reply.notFound();

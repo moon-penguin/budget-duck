@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import { IncomeController } from '../../../../../modules/incomes/controller/income.controller';
-import { IncomeSchema } from '../../../../../modules/incomes/domain/schemas/income.schema';
-import { IncomeArrayResponseSchema } from '../../../../../modules/incomes/domain/schemas/incomeArrayResponse.schema';
+import { IncomeController } from '../../../../modules/incomes/controller/income.controller';
+import { IncomeSchema } from '../../../../modules/incomes/domain/schemas/income.schema';
+import { IncomeArrayResponseSchema } from '../../../../modules/incomes/domain/schemas/incomeArrayResponse.schema';
 
 export default async function (fastify: FastifyInstance) {
   const incomeController = new IncomeController();
@@ -59,7 +59,7 @@ export default async function (fastify: FastifyInstance) {
     {
       schema: {
         response: {
-          200: IncomeArrayResponseSchema,
+          202: IncomeArrayResponseSchema,
         },
       },
     },

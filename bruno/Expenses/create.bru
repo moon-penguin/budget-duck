@@ -1,0 +1,25 @@
+meta {
+  name: create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/users/2/expenses
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": 4,
+    "title": "Bicycle",
+    "category": ["transportation", "leisure"],
+    "value": 1400,
+    "cycle": "ONCE",
+    "type": "EXPENSE",
+    "date": "2024-11-09T15:20:21.048Z",
+    "createdAt": "2024-11-09T15:20:21.048Z",
+    "updatedAt": "2024-11-09T15:20:21.048Z"
+  }
+}
