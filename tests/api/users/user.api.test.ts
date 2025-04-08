@@ -1,13 +1,12 @@
+import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { FastifyInstance } from 'fastify';
-import t from 'tap';
 import { PrismaClient } from '@prisma/client';
+import { UserBuilder } from '../../builder/User.builder';
+import t from 'tap';
 import {
   initPostgresContainer,
   initTestServer,
 } from '../../helper/test-env.setup';
-import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
-import { BudgetBuilder } from '../../builder/Budget.builder';
-import { UserBuilder } from '../../builder/User.builder';
 import { clearDatabase } from '../../helper/prisma-orm.helper';
 
 let postgresContainer: StartedPostgreSqlContainer;
@@ -15,7 +14,6 @@ let server: FastifyInstance;
 let prisma: PrismaClient;
 
 const userMock = new UserBuilder().build();
-const budgetMock = new BudgetBuilder().build({ userId: userMock.id });
 
 t.before(async () => {
   const { container, prismaOrm } = await initPostgresContainer();
@@ -23,9 +21,6 @@ t.before(async () => {
   prisma = prismaOrm;
 
   server = await initTestServer();
-
-  await prisma.user.create({ data: userMock });
-  await prisma.budget.create({ data: budgetMock });
 });
 
 t.after(async () => {
@@ -34,13 +29,19 @@ t.after(async () => {
   await postgresContainer.stop();
 });
 
-t.test('get all budgets of user', async () => {
+t.test('should create user in database when registered', async () => {
   const response = await server.inject({
-    method: 'GET',
-    url: 'api/v1/users/1/budgets',
+    method: 'POST',
+    url: 'api/v1/auth/register',
+    body: userMock,
   });
 
-  const payload = response.json();
+  const createdUser = await prisma.user.findUnique({
+    where: {
+      id: userMock.id,
+    },
+  });
 
-  t.equal(payload[0].id, budgetMock.id);
+  t.equal(userMock.id, createdUser.id);
+  t.equal(response.statusCode, 201);
 });

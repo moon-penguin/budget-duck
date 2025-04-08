@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { seedUser } from './seedUser';
-import { seedBudgets } from './seedBudgets';
+import { seedIncomes } from './seedIncomes';
 import { seedExpenses } from './seedExpenses';
 
 const prisma = new PrismaClient();
@@ -9,7 +9,7 @@ async function seed() {
   try {
     await resetDB();
     await seedUser();
-    await seedBudgets();
+    await seedIncomes();
     await seedExpenses();
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -20,7 +20,7 @@ async function seed() {
 
 async function resetDB() {
   await prisma.user.deleteMany();
-  await prisma.budget.deleteMany();
+  await prisma.income.deleteMany();
   await prisma.expense.deleteMany();
 }
 

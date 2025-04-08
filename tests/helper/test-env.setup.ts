@@ -36,7 +36,7 @@ export async function initTestServer() {
     ignoreDuplicateSlashes: true,
   });
 
-  server.register(app);
+  await server.register(app);
 
   process.env.NODE_ENV = testApplicationConfig.NODE_ENV;
   process.env.HOST = testApplicationConfig.HOST;

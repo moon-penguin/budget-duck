@@ -1,17 +1,17 @@
-import { Budget } from '@prisma/client';
-import { BudgetBuilder } from '../../tests/builder/Budget.builder';
+import { Income } from '@prisma/client';
+import { IncomeBuilder } from '../../tests/builder/Income.builder';
 import prisma from '../../src/app/shared/database/prisma';
 
-export async function seedBudgets() {
-  await prisma.budget.createMany({
-    data: buildBudgets(),
+export async function seedIncomes() {
+  await prisma.income.createMany({
+    data: buildIncomes(),
   });
 }
 
-function buildBudgets(): Budget[] {
+function buildIncomes(): Income[] {
   return [
-    new BudgetBuilder().build(),
-    new BudgetBuilder().build({
+    new IncomeBuilder().build(),
+    new IncomeBuilder().build({
       id: 2,
       title: 'Present',
       value: 100,

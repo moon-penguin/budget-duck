@@ -1,19 +1,19 @@
-import { Budget, PrismaClient } from '@prisma/client';
+import { Income, PrismaClient } from '@prisma/client';
+import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import { logError } from '../../../shared/utils/logError.utils';
 import { handlePrismaError } from '../../../shared/utils/handlePrismaError';
-import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import prismaClient from '../../../shared/database/prisma';
 
-export class BudgetRepository {
+export class IncomeRepository {
   private database: PrismaClient;
 
   constructor() {
     this.database = prismaClient;
   }
 
-  async findAll(userId: string): Promise<Budget[]> {
+  async findAll(userId: string): Promise<Income[]> {
     try {
-      return await this.database.budget.findMany({
+      return await this.database.income.findMany({
         orderBy: {
           id: 'asc',
         },
@@ -24,14 +24,14 @@ export class BudgetRepository {
         },
       });
     } catch (error: unknown) {
-      logError(error, 'budget repository');
+      logError(error, 'income repository');
       handlePrismaError(error);
     }
   }
 
-  async findById(id: number, userId: string): Promise<Budget | null> {
+  async findById(id: number, userId: string): Promise<Income | null> {
     try {
-      return await this.database.budget.findUnique({
+      return await this.database.income.findUnique({
         where: {
           id: id,
           AND: {
@@ -42,55 +42,55 @@ export class BudgetRepository {
         },
       });
     } catch (error: unknown) {
-      logError(error, 'budget repository');
+      logError(error, 'income repository');
       handlePrismaError(error);
     }
   }
 
-  async create(budget: Budget): Promise<Budget> {
+  async create(income: Income): Promise<Income> {
     try {
-      return await this.database.budget.create({
-        data: budget,
+      return await this.database.income.create({
+        data: income,
       });
     } catch (error: unknown) {
-      logError(error, 'budget repository');
+      logError(error, 'income repository');
       handlePrismaError(error);
     }
   }
 
-  async update(budget: Budget): Promise<Budget> {
+  async update(income: Income): Promise<Income> {
     try {
-      return await this.database.budget.update({
-        data: budget,
+      return await this.database.income.update({
+        data: income,
         where: {
-          id: budget.id,
+          id: income.id,
         },
       });
     } catch (error: unknown) {
-      logError(error, 'budget repository');
+      logError(error, 'income repository');
       handlePrismaError(error);
     }
   }
 
-  async delete(budget: Budget): Promise<Budget> {
+  async delete(income: Income): Promise<Income> {
     try {
-      return await this.database.budget.delete({
+      return await this.database.income.delete({
         where: {
-          id: budget.id,
+          id: income.id,
         },
       });
     } catch (error: unknown) {
-      logError(error, 'budget repository');
+      logError(error, 'income repository');
       handlePrismaError(error);
     }
   }
 
-  async findByMonth(month: Date, userId: string): Promise<Budget[]> {
+  async findByMonth(month: Date, userId: string): Promise<Income[]> {
     const firstDayOfCurrentMonth = startOfMonth(month);
     const lastDayOfCurrentMonth = lastDayOfMonth(month);
 
     try {
-      return this.database.budget.findMany({
+      return this.database.income.findMany({
         where: {
           date: {
             gte: firstDayOfCurrentMonth,
@@ -104,7 +104,7 @@ export class BudgetRepository {
         },
       });
     } catch (error: unknown) {
-      logError(error, 'expense repository');
+      logError(error, 'income repository');
       handlePrismaError(error);
     }
   }

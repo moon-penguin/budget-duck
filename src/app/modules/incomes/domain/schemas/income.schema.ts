@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from '../../../../shared/types/transaction.type';
 
-export const BudgetSchema = Type.Object(
+export const IncomeSchema = Type.Object(
   {
     id: Type.Number(),
     title: Type.String(),
@@ -23,8 +23,8 @@ export const BudgetSchema = Type.Object(
     }),
   },
   {
-    $id: 'schema:budget',
+    $id: 'schema:income',
     additionalProperties: false,
-    title: 'Budget',
+    title: 'Income',
   }
 );

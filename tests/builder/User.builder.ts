@@ -5,7 +5,7 @@ export class UserBuilder {
     id: '1',
     name: 'Mimi Soma',
     email: 'mimi@soma.de',
-    password: 'test',
+    password: 'test_password',
     createdAt: new Date(),
     updatedAt: new Date(),
   };

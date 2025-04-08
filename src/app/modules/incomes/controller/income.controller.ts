@@ -1,29 +1,29 @@
-import { BudgetRepository } from '../repository/budget.repository';
+import { IncomeRepository } from '../repository/income.repository';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { BudgetDto } from '../domain/dto/BudgetDto';
-import { BudgetMapper } from '../domain/mapper/Budget.mapper';
+import { IncomeDto } from '../domain/dto/IncomeDto';
+import { IncomeMapper } from '../domain/mapper/Income.mapper';
 import { UserService } from '../../users/services/user.service';
 
-export class BudgetController {
-  private budgetRepository: BudgetRepository;
+export class IncomeController {
+  private incomeRepository: IncomeRepository;
   private userService: UserService;
 
   constructor() {
-    this.budgetRepository = new BudgetRepository();
+    this.incomeRepository = new IncomeRepository();
     this.userService = new UserService();
   }
 
-  async findAllBudgets(
+  async findAll(
     request: FastifyRequest,
     reply: FastifyReply
-  ): Promise<BudgetDto[]> {
+  ): Promise<IncomeDto[]> {
     try {
       const userId = request.params['userId'] as string;
 
       if (await this.userService.userExists(userId)) {
-        const entities = await this.budgetRepository.findAll(userId);
+        const entities = await this.incomeRepository.findAll(userId);
         reply.code(202);
-        return BudgetMapper.toDtos(entities);
+        return IncomeMapper.toDtos(entities);
       } else {
         reply.notFound();
       }
@@ -34,19 +34,19 @@ export class BudgetController {
     }
   }
 
-  async findBudgetById(
+  async findById(
     request: FastifyRequest,
     reply: FastifyReply
-  ): Promise<BudgetDto> {
+  ): Promise<IncomeDto> {
     const id = Number(request.params['id']);
     const userId = request.params['userId'];
 
     try {
       if (await this.userService.userExists(userId)) {
-        const result = await this.budgetRepository.findById(id, userId);
+        const result = await this.incomeRepository.findById(id, userId);
         if (result) {
           reply.code(200);
-          return BudgetMapper.toDto(result);
+          return IncomeMapper.toDto(result);
         } else {
           reply.notFound();
         }
@@ -60,20 +60,20 @@ export class BudgetController {
     }
   }
 
-  async findBudgetsOfCurrentMonth(
+  async findByCurrentMonth(
     request: FastifyRequest,
     reply: FastifyReply
-  ): Promise<BudgetDto[]> {
+  ): Promise<IncomeDto[]> {
     try {
       const currentMonth = new Date(request.headers.date);
       const userId = request.params['userId'];
 
       if (await this.userService.userExists(userId)) {
-        const results = await this.budgetRepository.findByMonth(
+        const results = await this.incomeRepository.findByMonth(
           currentMonth,
           userId
         );
-        return BudgetMapper.toDtos(results);
+        return IncomeMapper.toDtos(results);
       } else {
         reply.notFound();
       }
@@ -84,14 +84,14 @@ export class BudgetController {
     }
   }
 
-  async createBudget(request: FastifyRequest, reply: FastifyReply) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const reqBudget = request.body as BudgetDto;
+      const reqBudget = request.body as IncomeDto;
       const userId = request.params['userId'];
 
       if (await this.userService.userExists(userId)) {
-        const entity = BudgetMapper.toEntity(reqBudget, userId);
-        await this.budgetRepository.create(entity);
+        const entity = IncomeMapper.toEntity(reqBudget, userId);
+        await this.incomeRepository.create(entity);
         reply.code(201);
       } else {
         reply.conflict();
@@ -103,10 +103,10 @@ export class BudgetController {
     }
   }
 
-  async updateBudget(request: FastifyRequest, reply: FastifyReply) {
+  async update(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
-      const reqBudget = request.body as BudgetDto;
+      const reqBudget = request.body as IncomeDto;
       const userId = request.params['userId'];
 
       if (id !== reqBudget.id) {
@@ -114,8 +114,8 @@ export class BudgetController {
       }
 
       if (await this.userService.userExists(userId)) {
-        const entity = BudgetMapper.toEntity(reqBudget, userId);
-        await this.budgetRepository.update(entity);
+        const entity = IncomeMapper.toEntity(reqBudget, userId);
+        await this.incomeRepository.update(entity);
         reply.code(202);
       } else {
         reply.conflict();
@@ -127,10 +127,10 @@ export class BudgetController {
     }
   }
 
-  async deleteBudget(request: FastifyRequest, reply: FastifyReply) {
+  async remove(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
-      const reqBudget = request.body as BudgetDto;
+      const reqBudget = request.body as IncomeDto;
       const userId = request.params['userId'];
 
       if (id !== reqBudget.id) {
@@ -138,8 +138,8 @@ export class BudgetController {
       }
 
       if (await this.userService.userExists(userId)) {
-        const entity = BudgetMapper.toEntity(reqBudget, userId);
-        await this.budgetRepository.delete(entity);
+        const entity = IncomeMapper.toEntity(reqBudget, userId);
+        await this.incomeRepository.delete(entity);
         reply.code(202);
       } else {
         reply.conflict();

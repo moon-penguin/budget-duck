@@ -1,7 +1,7 @@
-import { Budget } from '@prisma/client';
+import { Income } from '@prisma/client';
 
-export class BudgetBuilder {
-  private budget: Budget = {
+export class IncomeBuilder {
+  private income: Income = {
     id: 1,
     title: 'Grandma Present',
     value: 100,
@@ -15,9 +15,9 @@ export class BudgetBuilder {
     userId: '1',
   };
 
-  build(meta?: Partial<Budget>) {
+  build(meta?: Partial<Income>) {
     return {
-      ...this.budget,
+      ...this.income,
       ...meta,
     };
   }

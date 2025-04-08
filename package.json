@@ -11,7 +11,7 @@
     "test": "tap run",
     "lint": "nx lint",
     "format:check": "nx format:check",
-    "db:migragte": "npx prisma migrate dev",
+    "db:migrate": "npx prisma migrate dev",
     "db:ui": "npx prisma studio",
     "db:seed": "npx prisma db seed",
     "db:format": "npx prisma format",

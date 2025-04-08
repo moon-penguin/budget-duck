@@ -6,6 +6,6 @@ model User {
   updatedAt DateTime @updatedAt
   password  String
 
-  Budget  Budget[]
+  Income  Income[]
   Expense Expense[]
 }
