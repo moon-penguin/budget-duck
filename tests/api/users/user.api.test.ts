@@ -32,7 +32,7 @@ t.after(async () => {
 t.test('should create user in database when registered', async () => {
   const response = await server.inject({
     method: 'POST',
-    url: 'api/v1/auth/register',
+    url: 'api/auth/register',
     body: userMock,
   });
 

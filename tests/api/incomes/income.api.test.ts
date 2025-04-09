@@ -38,7 +38,7 @@ t.after(async () => {
 t.test('get all incomes of user', async () => {
   const response = await server.inject({
     method: 'GET',
-    url: 'api/v1/users/1/incomes',
+    url: 'api/users/1/incomes',
   });
 
   const payload = response.json() as IncomeDto[];
