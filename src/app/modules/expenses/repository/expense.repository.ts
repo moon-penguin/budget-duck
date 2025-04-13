@@ -1,6 +1,5 @@
 import { Expense, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
-import { handlePrismaError } from '../../../shared/utils/handlePrismaError';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import prismaClient from '../../../shared/database/prisma';
 
@@ -25,7 +24,6 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrismaError(error);
     }
   }
 
@@ -43,7 +41,6 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrismaError(error);
     }
   }
 
@@ -54,7 +51,6 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrismaError(error);
     }
   }
 
@@ -68,7 +64,6 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrismaError(error);
     }
   }
 
@@ -81,7 +76,6 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrismaError(error);
     }
   }
 
@@ -105,7 +99,6 @@ export class ExpenseRepository {
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
-      handlePrismaError(error);
     }
   }
 }

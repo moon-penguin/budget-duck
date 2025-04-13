@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import { PrismaService } from '../shared/database/prisma';
+import { PrismaService } from '../../shared/database/prisma';
 
 export default fp(prismaORM);
 

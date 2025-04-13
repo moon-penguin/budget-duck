@@ -1,6 +1,5 @@
 import { PrismaClient, User } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
-import { handlePrismaError } from '../../../shared/utils/handlePrismaError';
 import { hash } from 'bcrypt';
 import prismaClient from '../../../shared/database/prisma';
 
@@ -20,7 +19,6 @@ export class UserRepository {
       });
     } catch (error: unknown) {
       logError(error, 'user repository');
-      handlePrismaError(error);
     }
   }
 
@@ -33,7 +31,6 @@ export class UserRepository {
       });
     } catch (error: unknown) {
       logError(error, 'user repository');
-      handlePrismaError(error);
     }
   }
 
@@ -46,7 +43,6 @@ export class UserRepository {
       });
     } catch (error: unknown) {
       logError(error, 'user repository');
-      handlePrismaError(error);
     }
   }
 

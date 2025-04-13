@@ -27,10 +27,10 @@ const swaggerConfig: Partial<OpenAPIV3.Document | OpenAPIV3_1.Document> = {
 };
 
 async function swagger(fastify: FastifyInstance) {
-  fastify.register(fastifySwagger, {
+  await fastify.register(fastifySwagger, {
     openapi: swaggerConfig,
   });
-  fastify.register(fastifySwaggerUi, await loadSwaggerUIConfig());
+  await fastify.register(fastifySwaggerUi, await loadSwaggerUIConfig());
 }
 
 async function loadSwaggerUIConfig(): Promise<FastifySwaggerUiOptions> {

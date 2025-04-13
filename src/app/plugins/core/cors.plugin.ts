@@ -1,7 +1,9 @@
 import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
-import fastifyCsrfProtection from '@fastify/csrf-protection';
+import fastifyCors from '@fastify/cors';
 
 export default fp(async function (fastify: FastifyInstance) {
-  fastify.register(fastifyCsrfProtection);
+  await fastify.register(fastifyCors, {
+    origin: true,
+  });
 });

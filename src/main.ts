@@ -5,6 +5,7 @@ import { pinoLogger } from './app/shared/utils/logger.utils';
 import closeWithGrace from 'close-with-grace';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import * as process from 'node:process';
+import { randomUUID } from 'node:crypto';
 
 async function init() {
   const host = applicationConfig.HOST;
@@ -12,6 +13,9 @@ async function init() {
 
   const server = Fastify({
     logger: pinoLogger,
+    genReqId: (req) => {
+      return (req.headers['request-id'] as string) ?? randomUUID();
+    },
   }).withTypeProvider<TypeBoxTypeProvider>();
 
   await server.register(app);

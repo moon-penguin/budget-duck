@@ -1,9 +1,7 @@
 import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
-import fastifyCors from '@fastify/cors';
+import fastifyHelmet from '@fastify/helmet';
 
 export default fp(async function (fastify: FastifyInstance) {
-  fastify.register(fastifyCors, {
-    origin: true,
-  });
+  await fastify.register(fastifyHelmet);
 });

@@ -1,7 +1,6 @@
 import { Income, PrismaClient } from '@prisma/client';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import { logError } from '../../../shared/utils/logError.utils';
-import { handlePrismaError } from '../../../shared/utils/handlePrismaError';
 import prismaClient from '../../../shared/database/prisma';
 
 export class IncomeRepository {
@@ -25,7 +24,6 @@ export class IncomeRepository {
       });
     } catch (error: unknown) {
       logError(error, 'income repository');
-      handlePrismaError(error);
     }
   }
 
@@ -43,7 +41,6 @@ export class IncomeRepository {
       });
     } catch (error: unknown) {
       logError(error, 'income repository');
-      handlePrismaError(error);
     }
   }
 
@@ -54,7 +51,6 @@ export class IncomeRepository {
       });
     } catch (error: unknown) {
       logError(error, 'income repository');
-      handlePrismaError(error);
     }
   }
 
@@ -68,7 +64,6 @@ export class IncomeRepository {
       });
     } catch (error: unknown) {
       logError(error, 'income repository');
-      handlePrismaError(error);
     }
   }
 
@@ -81,7 +76,6 @@ export class IncomeRepository {
       });
     } catch (error: unknown) {
       logError(error, 'income repository');
-      handlePrismaError(error);
     }
   }
 
@@ -105,7 +99,6 @@ export class IncomeRepository {
       });
     } catch (error: unknown) {
       logError(error, 'income repository');
-      handlePrismaError(error);
     }
   }
 }

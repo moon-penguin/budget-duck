@@ -99,7 +99,7 @@ export class IncomeController {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        reply.internalServerError();
+        reply.internalServerError(error.message);
       }
     }
   }

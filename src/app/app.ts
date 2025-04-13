@@ -7,7 +7,12 @@ export interface AppOptions {}
 
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
   await fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins'),
+    dir: path.join(__dirname, 'plugins', 'core'),
+    options: { ...opts },
+  });
+
+  await fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'plugins', 'custom'),
     options: { ...opts },
   });
 
