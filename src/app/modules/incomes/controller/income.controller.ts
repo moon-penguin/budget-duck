@@ -25,7 +25,7 @@ export class IncomeController {
         reply.code(202);
         return IncomeMapper.toDtos(entities);
       } else {
-        reply.notFound();
+        reply.notFound(`User with id:${userId} not found`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -38,20 +38,18 @@ export class IncomeController {
     request: FastifyRequest,
     reply: FastifyReply
   ): Promise<IncomeDto> {
-    const id = Number(request.params['id']);
-    const userId = request.params['userId'];
-
     try {
+      const id = Number(request.params['id']);
+      const userId = request.params['userId'];
+
       if (await this.userService.userExists(userId)) {
         const result = await this.incomeRepository.findById(id, userId);
         if (result) {
           reply.code(200);
           return IncomeMapper.toDto(result);
         } else {
-          reply.notFound();
+          reply.notFound('No Income Found');
         }
-      } else {
-        reply.conflict();
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -95,7 +93,7 @@ export class IncomeController {
         await this.incomeRepository.create(entity);
         reply.code(201);
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -119,7 +117,7 @@ export class IncomeController {
         await this.incomeRepository.update(entity);
         reply.code(202);
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -143,7 +141,7 @@ export class IncomeController {
         await this.incomeRepository.delete(entity);
         reply.code(202);
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {

@@ -13,7 +13,7 @@ export class ExpensesController {
     this.userService = new UserService();
   }
 
-  async findAllExpenses(
+  async findAll(
     request: FastifyRequest,
     reply: FastifyReply
   ): Promise<ExpenseDto[]> {
@@ -21,11 +21,11 @@ export class ExpensesController {
       const userId = request.params['userId'];
 
       if (await this.userService.userExists(userId)) {
-        reply.statusCode = 202;
         const entities = await this.expenseRepository.findAll(userId);
+        reply.code(202);
         return ExpenseMapper.toDtos(entities);
       } else {
-        reply.notFound();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -34,7 +34,7 @@ export class ExpensesController {
     }
   }
 
-  async findExpenseById(
+  async findById(
     request: FastifyRequest,
     reply: FastifyReply
   ): Promise<ExpenseDto> {
@@ -45,13 +45,13 @@ export class ExpensesController {
       if (await this.userService.userExists(userId)) {
         const expense = await this.expenseRepository.findById(id, userId);
         if (expense) {
-          reply.statusCode = 200;
+          reply.code(200);
           return ExpenseMapper.toDto(expense);
         } else {
-          reply.notFound();
+          reply.notFound(`Expense with id:${id} not found.`);
         }
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -60,7 +60,7 @@ export class ExpensesController {
     }
   }
 
-  async findExpensesOfCurrentMonth(
+  async findByCurrentMonth(
     request: FastifyRequest,
     reply: FastifyReply
   ): Promise<ExpenseDto[]> {
@@ -74,10 +74,10 @@ export class ExpensesController {
           userId
         );
 
-        reply.statusCode = 202;
+        reply.code(202);
         return ExpenseMapper.toDtos(entities);
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -86,7 +86,7 @@ export class ExpensesController {
     }
   }
 
-  async createExpense(request: FastifyRequest, reply: FastifyReply) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     try {
       const expenseDto = request.body as ExpenseDto;
       const userId = request.params['userId'];
@@ -94,18 +94,18 @@ export class ExpensesController {
       if (await this.userService.userExists(userId)) {
         const entity = ExpenseMapper.toEntity(expenseDto, userId);
         await this.expenseRepository.create(entity);
-        reply.statusCode = 202;
+        reply.code(202);
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        reply.internalServerError(error.message);
+        reply.internalServerError();
       }
     }
   }
 
-  async updateExpense(request: FastifyRequest, reply: FastifyReply) {
+  async update(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
       const userId = request.params['userId'];
@@ -118,9 +118,9 @@ export class ExpensesController {
       if (await this.userService.userExists(userId)) {
         const entity = ExpenseMapper.toEntity(expenseDto, userId);
         await this.expenseRepository.update(entity);
-        reply.statusCode = 202;
+        reply.code(202);
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -129,7 +129,7 @@ export class ExpensesController {
     }
   }
 
-  async deleteExpense(request: FastifyRequest, reply: FastifyReply) {
+  async remove(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
       const expenseDto = request.body as ExpenseDto;
@@ -142,9 +142,9 @@ export class ExpensesController {
       if (await this.userService.userExists(userId)) {
         const entity = ExpenseMapper.toEntity(expenseDto, userId);
         await this.expenseRepository.delete(entity);
-        reply.statusCode = 202;
+        reply.code(202);
       } else {
-        reply.conflict();
+        reply.notFound(`User with id:${userId} not found.`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {

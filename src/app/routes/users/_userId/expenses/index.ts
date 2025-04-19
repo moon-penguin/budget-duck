@@ -18,7 +18,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await expensesController.createExpense(request, reply);
+      return await expensesController.create(request, reply);
     }
   );
 
@@ -36,7 +36,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await expensesController.findAllExpenses(request, reply);
+      return await expensesController.findAll(request, reply);
     }
   );
 
@@ -50,7 +50,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await expensesController.findExpenseById(request, reply);
+      return await expensesController.findById(request, reply);
     }
   );
 
@@ -64,10 +64,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await expensesController.findExpensesOfCurrentMonth(
-        request,
-        reply
-      );
+      return await expensesController.findByCurrentMonth(request, reply);
     }
   );
 
@@ -83,7 +80,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await expensesController.updateExpense(request, reply);
+      return await expensesController.update(request, reply);
     }
   );
 
@@ -99,7 +96,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await expensesController.deleteExpense(request, reply);
+      return await expensesController.remove(request, reply);
     }
   );
 }
