@@ -1,5 +1,6 @@
 import { ApplicationEnvironmentConfig } from './types/configuration.types';
 
+// Todo: change to receive config from env file
 const applicationConfig: ApplicationEnvironmentConfig = {
   HOST: 'localhost',
   NODE_ENV: 'production',

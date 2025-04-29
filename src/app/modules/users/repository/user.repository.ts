@@ -1,10 +1,12 @@
 import { PrismaClient, User } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
-import { hash } from 'bcrypt';
 import prismaClient from '../../../shared/database/prisma';
+import { PasswordManagerService } from '../services/password-manager.service';
+import { CreateUserDto } from '../domain/dto/create-user.dto';
 
 export class UserRepository {
-  private database: PrismaClient = prismaClient;
+  private readonly database: PrismaClient;
+  private readonly passwordManager = new PasswordManagerService();
 
   constructor() {
     this.database = prismaClient;
@@ -15,6 +17,7 @@ export class UserRepository {
       return await this.database.user.findUnique({
         where: {
           id: user.id,
+          email: user.email,
         },
       });
     } catch (error: unknown) {
@@ -34,25 +37,31 @@ export class UserRepository {
     }
   }
 
-  async create(user: User): Promise<void> {
+  async findByEmail(email: string): Promise<User | null> {
     try {
-      const userWithHashedPassword = await this.getUserWithHashedPassword(user);
-
-      await this.database.user.create({
-        data: { ...userWithHashedPassword },
+      return await this.database.user.findUnique({
+        where: {
+          email,
+        },
       });
     } catch (error: unknown) {
       logError(error, 'user repository');
     }
   }
 
-  private async getUserWithHashedPassword(user: User): Promise<User> {
-    const saltRounds = 10;
-    const hashedPassword = await hash(user.password, saltRounds);
+  async create(user: CreateUserDto): Promise<User | null> {
+    try {
+      const hashedPassword = await this.passwordManager.generateHashedPassword(
+        user.password
+      );
 
-    return {
-      ...user,
-      password: hashedPassword,
-    };
+      const createdUser = await this.database.user.create({
+        data: { ...user, password: hashedPassword },
+      });
+
+      return createdUser;
+    } catch (error: unknown) {
+      logError(error, 'user repository');
+    }
   }
 }

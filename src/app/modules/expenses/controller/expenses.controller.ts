@@ -20,7 +20,7 @@ export class ExpensesController {
     try {
       const userId = request.params['userId'];
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entities = await this.expenseRepository.findAll(userId);
         reply.code(202);
         return ExpenseMapper.toDtos(entities);
@@ -42,7 +42,7 @@ export class ExpensesController {
       const id = Number(request.params['id']);
       const userId = request.params['userId'];
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const expense = await this.expenseRepository.findById(id, userId);
         if (expense) {
           reply.code(200);
@@ -68,7 +68,7 @@ export class ExpensesController {
       const currentMonth = new Date(request.headers.date);
       const userId = request.params['userId'];
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entities = await this.expenseRepository.findByMonth(
           currentMonth,
           userId
@@ -91,7 +91,7 @@ export class ExpensesController {
       const expenseDto = request.body as ExpenseDto;
       const userId = request.params['userId'];
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entity = ExpenseMapper.toEntity(expenseDto, userId);
         await this.expenseRepository.create(entity);
         reply.code(202);
@@ -115,7 +115,7 @@ export class ExpensesController {
         return reply.badRequest();
       }
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entity = ExpenseMapper.toEntity(expenseDto, userId);
         await this.expenseRepository.update(entity);
         reply.code(202);
@@ -139,7 +139,7 @@ export class ExpensesController {
         return reply.badRequest();
       }
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entity = ExpenseMapper.toEntity(expenseDto, userId);
         await this.expenseRepository.delete(entity);
         reply.code(202);

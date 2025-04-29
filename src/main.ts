@@ -16,6 +16,12 @@ async function init() {
     genReqId: (req) => {
       return (req.headers['request-id'] as string) ?? randomUUID();
     },
+    ajv: {
+      customOptions: {
+        coerceTypes: 'array',
+        removeAdditional: 'all',
+      },
+    },
   }).withTypeProvider<TypeBoxTypeProvider>();
 
   await server.register(app);

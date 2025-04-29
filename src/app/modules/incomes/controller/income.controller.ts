@@ -20,7 +20,7 @@ export class IncomeController {
     try {
       const userId = request.params['userId'] as string;
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entities = await this.incomeRepository.findAll(userId);
         reply.code(202);
         return IncomeMapper.toDtos(entities);
@@ -42,7 +42,7 @@ export class IncomeController {
       const id = Number(request.params['id']);
       const userId = request.params['userId'];
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const result = await this.incomeRepository.findById(id, userId);
         if (result) {
           reply.code(200);
@@ -66,7 +66,7 @@ export class IncomeController {
       const currentMonth = new Date(request.headers.date);
       const userId = request.params['userId'];
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const results = await this.incomeRepository.findByMonth(
           currentMonth,
           userId
@@ -88,7 +88,7 @@ export class IncomeController {
       const reqBudget = request.body as IncomeDto;
       const userId = request.params['userId'];
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entity = IncomeMapper.toEntity(reqBudget, userId);
         await this.incomeRepository.create(entity);
         reply.code(201);
@@ -112,7 +112,7 @@ export class IncomeController {
         return reply.badRequest();
       }
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entity = IncomeMapper.toEntity(reqBudget, userId);
         await this.incomeRepository.update(entity);
         reply.code(202);
@@ -136,7 +136,7 @@ export class IncomeController {
         return reply.badRequest();
       }
 
-      if (await this.userService.userExists(userId)) {
+      if (await this.userService.verifyUserById(userId)) {
         const entity = IncomeMapper.toEntity(reqBudget, userId);
         await this.incomeRepository.delete(entity);
         reply.code(202);
