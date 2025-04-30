@@ -1,5 +1,5 @@
 import { Expense } from '@prisma/client';
-import { ExpenseDto } from '../dto/ExpenseDto';
+import { ExpenseDto } from '../dto/expense.dto';
 
 export class ExpenseMapper {
   static toDto(expense: Expense): ExpenseDto {

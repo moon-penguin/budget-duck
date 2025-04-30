@@ -2,7 +2,8 @@ import { ExpenseRepository } from '../repository/expense.repository';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { UserService } from '../../users/services/user.service';
 import { ExpenseMapper } from '../domain/mapper/expense.mapper';
-import { ExpenseDto } from '../domain/dto/ExpenseDto';
+import { ExpenseDto } from '../domain/dto/expense.dto';
+import { CreateExpenseDto } from '../domain/dto/create-expense.dto';
 
 export class ExpensesController {
   private expenseRepository: ExpenseRepository;
@@ -18,7 +19,7 @@ export class ExpensesController {
     reply: FastifyReply
   ): Promise<ExpenseDto[]> {
     try {
-      const userId = request.params['userId'];
+      const userId = request.user['id'] as string;
 
       if (await this.userService.verifyUserById(userId)) {
         const entities = await this.expenseRepository.findAll(userId);
@@ -40,7 +41,7 @@ export class ExpensesController {
   ): Promise<ExpenseDto> {
     try {
       const id = Number(request.params['id']);
-      const userId = request.params['userId'];
+      const userId = request.user['id'] as string;
 
       if (await this.userService.verifyUserById(userId)) {
         const expense = await this.expenseRepository.findById(id, userId);
@@ -66,7 +67,7 @@ export class ExpensesController {
   ): Promise<ExpenseDto[]> {
     try {
       const currentMonth = new Date(request.headers.date);
-      const userId = request.params['userId'];
+      const userId = request.user['id'] as string;
 
       if (await this.userService.verifyUserById(userId)) {
         const entities = await this.expenseRepository.findByMonth(
@@ -88,12 +89,11 @@ export class ExpensesController {
 
   async create(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const expenseDto = request.body as ExpenseDto;
-      const userId = request.params['userId'];
+      const expenseDto = request.body as CreateExpenseDto;
+      const userId = request.user['id'] as string;
 
       if (await this.userService.verifyUserById(userId)) {
-        const entity = ExpenseMapper.toEntity(expenseDto, userId);
-        await this.expenseRepository.create(entity);
+        await this.expenseRepository.create(expenseDto, userId);
         reply.code(202);
       } else {
         reply.notFound(`User with id:${userId} not found.`);
@@ -108,7 +108,7 @@ export class ExpensesController {
   async update(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
-      const userId = request.params['userId'];
+      const userId = request.user['id'] as string;
       const expenseDto = request.body as ExpenseDto;
 
       if (id !== expenseDto.id) {
@@ -133,7 +133,7 @@ export class ExpensesController {
     try {
       const id = Number(request.params['id']);
       const expenseDto = request.body as ExpenseDto;
-      const userId = request.params['userId'];
+      const userId = request.user['id'] as string;
 
       if (id !== expenseDto.id) {
         return reply.badRequest();

@@ -1,9 +1,12 @@
 import { FastifyInstance } from 'fastify';
-import { ExpensesController } from '../../../../modules/expenses/controller/expenses.controller';
-import { ExpenseSchema } from '../../../../modules/expenses/domain/schemas/expense.schema';
-import { ExpensesResponseSchema } from '../../../../modules/expenses/domain/schemas/expensesResponse.schema';
+import { ExpensesController } from '../../modules/expenses/controller/expenses.controller';
+import { ExpenseSchema } from '../../modules/expenses/domain/schemas/expense.schema';
+import { ExpensesResponseSchema } from '../../modules/expenses/domain/schemas/expensesResponse.schema';
+import { CreateExpenseSchema } from '../../modules/expenses/domain/schemas/create-expense.schema';
 
 export default async function (fastify: FastifyInstance) {
+  fastify.addHook('onRequest', fastify['authenticate']);
+
   const expensesController = new ExpensesController();
 
   /*
@@ -14,7 +17,7 @@ export default async function (fastify: FastifyInstance) {
     '',
     {
       schema: {
-        body: ExpenseSchema,
+        body: CreateExpenseSchema,
       },
     },
     async (request, reply) => {

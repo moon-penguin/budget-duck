@@ -2,6 +2,7 @@ import { Expense, PrismaClient } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import prismaClient from '../../../shared/database/prisma';
+import { CreateExpenseDto } from '../domain/dto/create-expense.dto';
 
 export class ExpenseRepository {
   private database: PrismaClient;
@@ -44,10 +45,13 @@ export class ExpenseRepository {
     }
   }
 
-  async create(expense: Expense): Promise<Expense> {
+  async create(expense: CreateExpenseDto, userId: string): Promise<Expense> {
     try {
       return await this.database.expense.create({
-        data: expense,
+        data: {
+          ...expense,
+          userId,
+        },
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');
@@ -60,6 +64,9 @@ export class ExpenseRepository {
         data: expense,
         where: {
           id: expense.id,
+          AND: {
+            userId: expense.userId,
+          },
         },
       });
     } catch (error: unknown) {
