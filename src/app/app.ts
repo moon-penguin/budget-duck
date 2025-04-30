@@ -55,28 +55,4 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
       return reply.notFound();
     }
   );
-
-  // Todo: overrides not found if non existend route is called?
-  /* fastify.setErrorHandler(async (error, request, reply) => {
-    fastify.log.error(
-      {
-        error,
-        request: {
-          method: request.method,
-          url: request.url,
-          headers: request.headers,
-          body: request.body,
-          query: request.query,
-          params: request.params,
-        },
-      },
-      'Unhandled error'
-    );
-
-    if (error.statusCode) {
-      return reply.code(error.statusCode);
-    } else {
-      return reply.internalServerError();
-    }
-  });*/
 }
