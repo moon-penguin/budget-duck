@@ -34,8 +34,9 @@ async function jwtAuth(fastify: FastifyInstance) {
   fastify.decorateRequest('generateToken', async function () {
     const token = fastify.jwt.sign(
       {
-        id: String(this.user['_id']),
-        username: this.user['username'],
+        id: String(this.user['id']),
+        username: this.user['name'],
+        email: this.user['email'],
       },
       {
         jti: String(Date.now()),
