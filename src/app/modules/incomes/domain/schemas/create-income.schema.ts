@@ -4,20 +4,20 @@ import {
   TransactionCycles,
 } from '../../../../shared/types/transaction.type';
 
-export const CreateExpenseSchema = Type.Object(
+export const CreateIncomeSchema = Type.Object(
   {
     title: Type.String(),
     category: Type.Array(Type.String()),
     value: Type.Number(),
     cycle: TransactionCycles,
-    type: Type.Literal(TRANSACTION_TYPE.EXPENSE),
+    type: Type.Literal(TRANSACTION_TYPE.INCOME),
     date: Type.String({
       format: 'date-time',
     }),
   },
   {
-    $id: 'schema:expense:create',
+    $id: 'schema:income:create',
     additionalProperties: false,
-    title: 'Create Expense',
+    title: 'Create Income',
   }
 );

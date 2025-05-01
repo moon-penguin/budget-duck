@@ -9,7 +9,7 @@ import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { IncomeBuilder } from '../../builder/Income.builder';
 import { UserBuilder } from '../../builder/User.builder';
 import { clearDatabase } from '../../helper/prisma-orm.helper';
-import { IncomeDto } from '../../../src/app/modules/incomes/domain/dto/IncomeDto';
+import { IncomeDto } from '../../../src/app/modules/incomes/domain/dto/income.dto';
 
 let postgresContainer: StartedPostgreSqlContainer;
 let server: FastifyInstance;

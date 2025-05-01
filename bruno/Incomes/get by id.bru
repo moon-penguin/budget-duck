@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/users/1/incomes/10
+  url: {{baseUrl}}/incomes/4
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJ1c2VybmFtZSI6IlJvYmJ5IFB1cHBhIiwiZW1haWwiOiJwdXBzQHJvYi5kZSIsImp0aSI6IjE3NDYwMTcwMjk0NDAiLCJpYXQiOjE3NDYwMTcwMjl9.ShfJyByHOPayLvy5o2Ylo1ME0Vsq2jt9gc-JvSX8uK8
 }

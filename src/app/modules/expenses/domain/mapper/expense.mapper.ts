@@ -1,5 +1,6 @@
 import { Expense } from '@prisma/client';
 import { ExpenseDto } from '../dto/expense.dto';
+import { TRANSACTION_TYPE } from '../../../../shared/types/transaction.type';
 
 export class ExpenseMapper {
   static toDto(expense: Expense): ExpenseDto {
@@ -8,7 +9,7 @@ export class ExpenseMapper {
       title: expense.title,
       category: expense.category,
       cycle: expense.cycle,
-      type: expense.type,
+      type: TRANSACTION_TYPE.EXPENSE,
       value: expense.value,
       date: expense.date.toString(),
       createdAt: expense.createdAt.toString(),
@@ -22,7 +23,7 @@ export class ExpenseMapper {
       title: expenseDto.title,
       category: expenseDto.category,
       cycle: expenseDto.cycle,
-      type: expenseDto.type,
+      type: TRANSACTION_TYPE.EXPENSE,
       value: expenseDto.value,
       date: new Date(expenseDto.date),
       createdAt: new Date(expenseDto.createdAt),

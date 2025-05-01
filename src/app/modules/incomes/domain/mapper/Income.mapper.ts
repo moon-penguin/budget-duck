@@ -1,5 +1,6 @@
-import { IncomeDto } from '../dto/IncomeDto';
+import { IncomeDto } from '../dto/income.dto';
 import { Income } from '@prisma/client';
+import { TRANSACTION_TYPE } from '../../../../shared/types/transaction.type';
 
 export class IncomeMapper {
   static toDto(income: Income): IncomeDto {
@@ -8,7 +9,7 @@ export class IncomeMapper {
       title: income.title,
       category: income.category,
       cycle: income.cycle,
-      type: income.type,
+      type: TRANSACTION_TYPE.INCOME,
       value: income.value,
       date: income.date.toString(),
       createdAt: income.createdAt.toString(),
@@ -22,7 +23,7 @@ export class IncomeMapper {
       title: incomeDto.title,
       category: incomeDto.category,
       cycle: incomeDto.cycle,
-      type: incomeDto.type,
+      type: TRANSACTION_TYPE.INCOME,
       value: incomeDto.value,
       date: new Date(incomeDto.date),
       createdAt: new Date(incomeDto.createdAt),

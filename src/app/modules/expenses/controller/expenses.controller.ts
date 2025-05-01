@@ -1,17 +1,15 @@
 import { ExpenseRepository } from '../repository/expense.repository';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { UserService } from '../../users/services/user.service';
 import { ExpenseMapper } from '../domain/mapper/expense.mapper';
 import { ExpenseDto } from '../domain/dto/expense.dto';
 import { CreateExpenseDto } from '../domain/dto/create-expense.dto';
+import { logError } from '../../../shared/utils/logError.utils';
 
 export class ExpensesController {
   private expenseRepository: ExpenseRepository;
-  private userService: UserService;
 
   constructor() {
     this.expenseRepository = new ExpenseRepository();
-    this.userService = new UserService();
   }
 
   async findAll(
@@ -20,18 +18,13 @@ export class ExpensesController {
   ): Promise<ExpenseDto[]> {
     try {
       const userId = request.user['id'] as string;
+      const entities = await this.expenseRepository.findAll(userId);
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entities = await this.expenseRepository.findAll(userId);
-        reply.code(202);
-        return ExpenseMapper.toDtos(entities);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      reply.code(202);
+      return ExpenseMapper.toDtos(entities);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'expenses controller');
+      reply.internalServerError();
     }
   }
 
@@ -43,21 +36,16 @@ export class ExpensesController {
       const id = Number(request.params['id']);
       const userId = request.user['id'] as string;
 
-      if (await this.userService.verifyUserById(userId)) {
-        const expense = await this.expenseRepository.findById(id, userId);
-        if (expense) {
-          reply.code(200);
-          return ExpenseMapper.toDto(expense);
-        } else {
-          reply.notFound(`Expense with id:${id} not found.`);
-        }
+      const expense = await this.expenseRepository.findById(id, userId);
+      if (expense) {
+        reply.code(200);
+        return ExpenseMapper.toDto(expense);
       } else {
-        reply.notFound(`User with id:${userId} not found.`);
+        reply.notFound(`Expense with id:${id} not found.`);
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'expenses controller');
+      reply.internalServerError();
     }
   }
 
@@ -69,21 +57,16 @@ export class ExpensesController {
       const currentMonth = new Date(request.headers.date);
       const userId = request.user['id'] as string;
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entities = await this.expenseRepository.findByMonth(
-          currentMonth,
-          userId
-        );
+      const entities = await this.expenseRepository.findByMonth(
+        currentMonth,
+        userId
+      );
 
-        reply.code(202);
-        return ExpenseMapper.toDtos(entities);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      reply.code(202);
+      return ExpenseMapper.toDtos(entities);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'expenses controller');
+      reply.internalServerError();
     }
   }
 
@@ -92,16 +75,11 @@ export class ExpensesController {
       const expenseDto = request.body as CreateExpenseDto;
       const userId = request.user['id'] as string;
 
-      if (await this.userService.verifyUserById(userId)) {
-        await this.expenseRepository.create(expenseDto, userId);
-        reply.code(202);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      await this.expenseRepository.create(expenseDto, userId);
+      reply.code(202);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'expenses controller');
+      reply.internalServerError();
     }
   }
 
@@ -115,17 +93,13 @@ export class ExpensesController {
         return reply.badRequest();
       }
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entity = ExpenseMapper.toEntity(expenseDto, userId);
-        await this.expenseRepository.update(entity);
-        reply.code(202);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      const entity = ExpenseMapper.toEntity(expenseDto, userId);
+
+      await this.expenseRepository.update(entity);
+      reply.code(202);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'expenses controller');
+      reply.internalServerError();
     }
   }
 
@@ -139,17 +113,12 @@ export class ExpensesController {
         return reply.badRequest();
       }
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entity = ExpenseMapper.toEntity(expenseDto, userId);
-        await this.expenseRepository.delete(entity);
-        reply.code(202);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      const entity = ExpenseMapper.toEntity(expenseDto, userId);
+      await this.expenseRepository.delete(entity);
+      reply.code(202);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'expenses controller');
+      reply.internalServerError();
     }
   }
 }

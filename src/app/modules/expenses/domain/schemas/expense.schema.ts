@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox';
 import {
-  TransactionCycle,
-  TransactionType,
+  TRANSACTION_TYPE,
+  TransactionCycles,
 } from '../../../../shared/types/transaction.type';
 
 export const ExpenseSchema = Type.Object(
@@ -10,8 +10,8 @@ export const ExpenseSchema = Type.Object(
     title: Type.String(),
     category: Type.Array(Type.String()),
     value: Type.Number(),
-    cycle: TransactionCycle,
-    type: TransactionType,
+    cycle: TransactionCycles,
+    type: Type.Literal(TRANSACTION_TYPE.EXPENSE),
     date: Type.String({
       format: 'date-time',
     }),

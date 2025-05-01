@@ -2,6 +2,7 @@ import { Income, PrismaClient } from '@prisma/client';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import { logError } from '../../../shared/utils/logError.utils';
 import prismaClient from '../../../shared/database/prisma';
+import { CreateIncomeDto } from '../domain/dto/create-income.dto';
 
 export class IncomeRepository {
   private database: PrismaClient;
@@ -44,10 +45,13 @@ export class IncomeRepository {
     }
   }
 
-  async create(income: Income): Promise<Income> {
+  async create(income: CreateIncomeDto, userId: string): Promise<Income> {
     try {
       return await this.database.income.create({
-        data: income,
+        data: {
+          ...income,
+          userId,
+        },
       });
     } catch (error: unknown) {
       logError(error, 'income repository');

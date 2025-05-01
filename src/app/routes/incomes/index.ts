@@ -1,9 +1,11 @@
 import { FastifyInstance } from 'fastify';
-import { IncomeController } from '../../../../modules/incomes/controller/income.controller';
-import { IncomeSchema } from '../../../../modules/incomes/domain/schemas/income.schema';
-import { IncomeArrayResponseSchema } from '../../../../modules/incomes/domain/schemas/incomeArrayResponse.schema';
+import { IncomeController } from '../../modules/incomes/controller/income.controller';
+import { IncomeSchema } from '../../modules/incomes/domain/schemas/income.schema';
+import { IncomeArrayResponseSchema } from '../../modules/incomes/domain/schemas/incomeArrayResponse.schema';
+import { CreateIncomeSchema } from '../../modules/incomes/domain/schemas/create-income.schema';
 
 export default async function (fastify: FastifyInstance) {
+  fastify.addHook('onRequest', fastify['authenticate']);
   const incomeController = new IncomeController();
 
   /*
@@ -14,7 +16,7 @@ export default async function (fastify: FastifyInstance) {
     '',
     {
       schema: {
-        body: IncomeSchema,
+        body: CreateIncomeSchema,
       },
     },
     async (request, reply) => {

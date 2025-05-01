@@ -5,14 +5,18 @@ meta {
 }
 
 delete {
-  url: {{baseUrl}}/users/1/incomes/3
+  url: {{baseUrl}}/incomes/5
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJ1c2VybmFtZSI6IlJvYmJ5IFB1cHBhIiwiZW1haWwiOiJwdXBzQHJvYi5kZSIsImp0aSI6IjE3NDYwMTcwMjk0NDAiLCJpYXQiOjE3NDYwMTcwMjl9.ShfJyByHOPayLvy5o2Ylo1ME0Vsq2jt9gc-JvSX8uK8
 }
 
 body:json {
   {
-    "id": 3,
+    "id": 5,
     "title": "Netflix",
     "category": [
       "video",

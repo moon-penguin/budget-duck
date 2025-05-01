@@ -1,16 +1,15 @@
 import { IncomeRepository } from '../repository/income.repository';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { IncomeDto } from '../domain/dto/IncomeDto';
+import { IncomeDto } from '../domain/dto/income.dto';
 import { IncomeMapper } from '../domain/mapper/Income.mapper';
-import { UserService } from '../../users/services/user.service';
+import { CreateIncomeDto } from '../domain/dto/create-income.dto';
+import { logError } from '../../../shared/utils/logError.utils';
 
 export class IncomeController {
   private incomeRepository: IncomeRepository;
-  private userService: UserService;
 
   constructor() {
     this.incomeRepository = new IncomeRepository();
-    this.userService = new UserService();
   }
 
   async findAll(
@@ -18,19 +17,15 @@ export class IncomeController {
     reply: FastifyReply
   ): Promise<IncomeDto[]> {
     try {
-      const userId = request.params['userId'] as string;
+      const userId = request.user['id'] as string;
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entities = await this.incomeRepository.findAll(userId);
-        reply.code(202);
-        return IncomeMapper.toDtos(entities);
-      } else {
-        reply.notFound(`User with id:${userId} not found`);
-      }
+      const entities = await this.incomeRepository.findAll(userId);
+      reply.code(202);
+
+      return IncomeMapper.toDtos(entities);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError(error.message);
-      }
+      logError(error, 'income controller');
+      reply.internalServerError();
     }
   }
 
@@ -40,21 +35,18 @@ export class IncomeController {
   ): Promise<IncomeDto> {
     try {
       const id = Number(request.params['id']);
-      const userId = request.params['userId'];
+      const userId = request.user['id'] as string;
 
-      if (await this.userService.verifyUserById(userId)) {
-        const result = await this.incomeRepository.findById(id, userId);
-        if (result) {
-          reply.code(200);
-          return IncomeMapper.toDto(result);
-        } else {
-          reply.notFound('No Income Found');
-        }
+      const result = await this.incomeRepository.findById(id, userId);
+      if (result) {
+        reply.code(200);
+        return IncomeMapper.toDto(result);
+      } else {
+        reply.notFound('No Income Found');
       }
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError(error.message);
-      }
+      logError(error, 'income controller');
+      reply.internalServerError();
     }
   }
 
@@ -64,89 +56,69 @@ export class IncomeController {
   ): Promise<IncomeDto[]> {
     try {
       const currentMonth = new Date(request.headers.date);
-      const userId = request.params['userId'];
+      const userId = request.user['id'] as string;
 
-      if (await this.userService.verifyUserById(userId)) {
-        const results = await this.incomeRepository.findByMonth(
-          currentMonth,
-          userId
-        );
-        reply.code(200);
-        return IncomeMapper.toDtos(results);
-      } else {
-        reply.notFound();
-      }
+      const results = await this.incomeRepository.findByMonth(
+        currentMonth,
+        userId
+      );
+
+      reply.code(200);
+      return IncomeMapper.toDtos(results);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'income controller');
+      reply.internalServerError();
     }
   }
 
   async create(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const reqBudget = request.body as IncomeDto;
-      const userId = request.params['userId'];
+      const reqIncome = request.body as CreateIncomeDto;
+      const userId = request.user['id'] as string;
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entity = IncomeMapper.toEntity(reqBudget, userId);
-        await this.incomeRepository.create(entity);
-        reply.code(201);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      await this.incomeRepository.create(reqIncome, userId);
+      return reply.code(201);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError(error.message);
-      }
+      logError(error, 'income controller');
+      reply.internalServerError();
     }
   }
 
   async update(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
-      const reqBudget = request.body as IncomeDto;
-      const userId = request.params['userId'];
+      const reqIncome = request.body as IncomeDto;
+      const userId = request.user['id'] as string;
 
-      if (id !== reqBudget.id) {
+      if (id !== reqIncome.id) {
         return reply.badRequest();
       }
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entity = IncomeMapper.toEntity(reqBudget, userId);
-        await this.incomeRepository.update(entity);
-        reply.code(202);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      const entity = IncomeMapper.toEntity(reqIncome, userId);
+      await this.incomeRepository.update(entity);
+      return reply.code(202);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'income controller');
+      reply.internalServerError();
     }
   }
 
   async remove(request: FastifyRequest, reply: FastifyReply) {
     try {
       const id = Number(request.params['id']);
-      const reqBudget = request.body as IncomeDto;
-      const userId = request.params['userId'];
+      const reqIncome = request.body as IncomeDto;
+      const userId = request.user['id'] as string;
 
-      if (id !== reqBudget.id) {
+      if (id !== reqIncome.id) {
         return reply.badRequest();
       }
 
-      if (await this.userService.verifyUserById(userId)) {
-        const entity = IncomeMapper.toEntity(reqBudget, userId);
-        await this.incomeRepository.delete(entity);
-        reply.code(202);
-      } else {
-        reply.notFound(`User with id:${userId} not found.`);
-      }
+      const entity = IncomeMapper.toEntity(reqIncome, userId);
+      await this.incomeRepository.delete(entity);
+      reply.code(202);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        reply.internalServerError();
-      }
+      logError(error, 'income controller');
+      reply.internalServerError();
     }
   }
 }

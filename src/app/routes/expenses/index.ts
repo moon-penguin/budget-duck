@@ -6,7 +6,6 @@ import { CreateExpenseSchema } from '../../modules/expenses/domain/schemas/creat
 
 export default async function (fastify: FastifyInstance) {
   fastify.addHook('onRequest', fastify['authenticate']);
-
   const expensesController = new ExpensesController();
 
   /*
