@@ -4,6 +4,7 @@ import { ExpenseMapper } from '../domain/mapper/expense.mapper';
 import { ExpenseDto } from '../domain/dto/expense.dto';
 import { CreateExpenseDto } from '../domain/dto/create-expense.dto';
 import { logError } from '../../../shared/utils/logError.utils';
+import { PaginationQueryDto } from '../../../shared/schema/pagination-query.schema';
 
 export class ExpensesController {
   private expenseRepository: ExpenseRepository;
@@ -18,7 +19,12 @@ export class ExpensesController {
   ): Promise<ExpenseDto[]> {
     try {
       const userId = request.user['id'] as string;
-      const entities = await this.expenseRepository.findAll(userId);
+      const paginationQuery = request.query as PaginationQueryDto;
+
+      const entities = await this.expenseRepository.findAll(
+        userId,
+        paginationQuery
+      );
 
       reply.code(202);
       return ExpenseMapper.toDtos(entities);
@@ -94,6 +100,15 @@ export class ExpensesController {
       }
 
       const entity = ExpenseMapper.toEntity(expenseDto, userId);
+
+      const expenseToUpdate = await this.expenseRepository.findById(
+        entity.id,
+        entity.userId
+      );
+
+      if (!expenseToUpdate) {
+        return reply.notFound(`Expense with id:${id} not found.`);
+      }
 
       await this.expenseRepository.update(entity);
       reply.code(202);

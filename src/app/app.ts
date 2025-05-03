@@ -27,6 +27,11 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
   });
 
   await fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'shared', 'schema'),
+    indexPattern: /loader.schema.ts/,
+  });
+
+  await fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: { prefix: 'api', ...opts },
     routeParams: true,

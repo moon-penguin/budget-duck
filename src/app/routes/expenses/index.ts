@@ -3,6 +3,7 @@ import { ExpensesController } from '../../modules/expenses/controller/expenses.c
 import { ExpenseSchema } from '../../modules/expenses/domain/schemas/expense.schema';
 import { ExpensesResponseSchema } from '../../modules/expenses/domain/schemas/expensesResponse.schema';
 import { CreateExpenseSchema } from '../../modules/expenses/domain/schemas/create-expense.schema';
+import { PaginationQuerySchema } from '../../shared/schema/pagination-query.schema';
 
 export default async function (fastify: FastifyInstance) {
   fastify.addHook('onRequest', fastify['authenticate']);
@@ -35,6 +36,7 @@ export default async function (fastify: FastifyInstance) {
         response: {
           200: ExpensesResponseSchema,
         },
+        querystring: PaginationQuerySchema,
       },
     },
     async (request, reply) => {

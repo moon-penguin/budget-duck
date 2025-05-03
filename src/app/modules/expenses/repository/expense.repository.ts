@@ -3,6 +3,7 @@ import { logError } from '../../../shared/utils/logError.utils';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import prismaClient from '../../../shared/database/prisma';
 import { CreateExpenseDto } from '../domain/dto/create-expense.dto';
+import { PaginationQueryDto } from '../../../shared/schema/pagination-query.schema';
 
 export class ExpenseRepository {
   private database: PrismaClient;
@@ -11,8 +12,12 @@ export class ExpenseRepository {
     this.database = prismaClient;
   }
 
-  async findAll(userId: string): Promise<Expense[]> {
+  async findAll(
+    userId: string,
+    paginationQuery: PaginationQueryDto
+  ): Promise<Expense[]> {
     try {
+      const { limit, offset } = paginationQuery;
       return await this.database.expense.findMany({
         orderBy: {
           id: 'asc',
@@ -22,6 +27,8 @@ export class ExpenseRepository {
             id: userId,
           },
         },
+        skip: offset,
+        take: limit,
       });
     } catch (error: unknown) {
       logError(error, 'expense repository');

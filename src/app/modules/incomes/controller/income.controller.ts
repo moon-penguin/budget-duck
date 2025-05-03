@@ -4,6 +4,7 @@ import { IncomeDto } from '../domain/dto/income.dto';
 import { IncomeMapper } from '../domain/mapper/Income.mapper';
 import { CreateIncomeDto } from '../domain/dto/create-income.dto';
 import { logError } from '../../../shared/utils/logError.utils';
+import { PaginationQueryDto } from 'src/app/shared/schema/pagination-query.schema';
 
 export class IncomeController {
   private incomeRepository: IncomeRepository;
@@ -18,8 +19,12 @@ export class IncomeController {
   ): Promise<IncomeDto[]> {
     try {
       const userId = request.user['id'] as string;
+      const paginationQuery = request.query as PaginationQueryDto;
 
-      const entities = await this.incomeRepository.findAll(userId);
+      const entities = await this.incomeRepository.findAll(
+        userId,
+        paginationQuery
+      );
       reply.code(202);
 
       return IncomeMapper.toDtos(entities);
@@ -95,6 +100,15 @@ export class IncomeController {
       }
 
       const entity = IncomeMapper.toEntity(reqIncome, userId);
+      const incomeToUpdate = await this.incomeRepository.findById(
+        entity.id,
+        entity.userId
+      );
+
+      if (!incomeToUpdate) {
+        return reply.notFound(`Income with id:${id} not found.`);
+      }
+
       await this.incomeRepository.update(entity);
       return reply.code(202);
     } catch (error: unknown) {

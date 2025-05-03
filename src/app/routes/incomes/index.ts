@@ -3,6 +3,7 @@ import { IncomeController } from '../../modules/incomes/controller/income.contro
 import { IncomeSchema } from '../../modules/incomes/domain/schemas/income.schema';
 import { IncomeArrayResponseSchema } from '../../modules/incomes/domain/schemas/incomeArrayResponse.schema';
 import { CreateIncomeSchema } from '../../modules/incomes/domain/schemas/create-income.schema';
+import { PaginationQuerySchema } from '../../shared/schema/pagination-query.schema';
 
 export default async function (fastify: FastifyInstance) {
   fastify.addHook('onRequest', fastify['authenticate']);
@@ -35,6 +36,7 @@ export default async function (fastify: FastifyInstance) {
         response: {
           200: IncomeArrayResponseSchema,
         },
+        querystring: PaginationQuerySchema,
       },
     },
     async (request, reply) => {

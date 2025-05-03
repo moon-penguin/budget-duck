@@ -8,7 +8,9 @@ export const CreateIncomeSchema = Type.Object(
   {
     title: Type.String(),
     category: Type.Array(Type.String()),
-    value: Type.Number(),
+    value: Type.Number({
+      minimum: 0,
+    }),
     cycle: TransactionCycles,
     type: Type.Literal(TRANSACTION_TYPE.INCOME),
     date: Type.String({

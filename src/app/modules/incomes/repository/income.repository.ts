@@ -3,6 +3,7 @@ import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import { logError } from '../../../shared/utils/logError.utils';
 import prismaClient from '../../../shared/database/prisma';
 import { CreateIncomeDto } from '../domain/dto/create-income.dto';
+import { PaginationQueryDto } from '../../../shared/schema/pagination-query.schema';
 
 export class IncomeRepository {
   private database: PrismaClient;
@@ -11,8 +12,12 @@ export class IncomeRepository {
     this.database = prismaClient;
   }
 
-  async findAll(userId: string): Promise<Income[]> {
+  async findAll(
+    userId: string,
+    paginationQuery: PaginationQueryDto
+  ): Promise<Income[]> {
     try {
+      const { limit, offset } = paginationQuery;
       return await this.database.income.findMany({
         orderBy: {
           id: 'asc',
@@ -22,6 +27,8 @@ export class IncomeRepository {
             id: userId,
           },
         },
+        skip: offset,
+        take: limit,
       });
     } catch (error: unknown) {
       logError(error, 'income repository');

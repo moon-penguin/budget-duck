@@ -4,12 +4,15 @@ import {
   TransactionCycles,
 } from '../../../../shared/types/transaction.type';
 
+// Todo: restrict expense number range, minimum to 0 and max should be an open interval
 export const ExpenseSchema = Type.Object(
   {
     id: Type.Number(),
     title: Type.String(),
     category: Type.Array(Type.String()),
-    value: Type.Number(),
+    value: Type.Number({
+      minimum: 0,
+    }),
     cycle: TransactionCycles,
     type: Type.Literal(TRANSACTION_TYPE.EXPENSE),
     date: Type.String({
