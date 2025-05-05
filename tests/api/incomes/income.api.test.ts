@@ -6,17 +6,18 @@ import {
   initTestServer,
 } from '../../helper/test-env.setup';
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
-import { IncomeBuilder } from '../../builder/Income.builder';
 import { UserBuilder } from '../../builder/User.builder';
 import { clearDatabase } from '../../helper/prisma-orm.helper';
 import { IncomeDto } from '../../../src/app/modules/incomes/domain/dto/income.dto';
+import { CreateIncomeDto } from '../../../src/app/modules/incomes/domain/dto/create-income.dto';
+import { TRANSACTION_TYPE } from '../../../src/app/shared/types/transaction.type';
 
 let postgresContainer: StartedPostgreSqlContainer;
 let server: FastifyInstance;
 let prisma: PrismaClient;
+let authToken: string;
 
 const userMock = new UserBuilder().build();
-const incomeMock = new IncomeBuilder().build({ userId: userMock.id });
 
 t.before(async () => {
   const { container, prismaOrm } = await initPostgresContainer();
@@ -25,8 +26,28 @@ t.before(async () => {
 
   server = await initTestServer();
 
-  await prisma.user.create({ data: userMock });
-  await prisma.income.create({ data: incomeMock });
+  // register user
+  await server.inject({
+    method: 'POST',
+    url: '/api/auth/register',
+    body: {
+      name: userMock.name,
+      email: userMock.email,
+      password: userMock.password,
+    },
+  });
+
+  // login user to get bearer token
+  const loginResponse = await server.inject({
+    method: 'POST',
+    url: '/api/auth/login',
+    body: {
+      email: userMock.email,
+      password: userMock.password,
+    },
+  });
+
+  authToken = loginResponse.json().token;
 });
 
 t.after(async () => {
@@ -35,14 +56,36 @@ t.after(async () => {
   await postgresContainer.stop();
 });
 
-t.test('get all incomes of user', async () => {
-  const response = await server.inject({
-    method: 'GET',
-    url: 'api/users/1/incomes',
+t.test('create income', async () => {
+  const createIncome: CreateIncomeDto = {
+    date: new Date().toISOString(),
+    category: ['communication'],
+    type: TRANSACTION_TYPE.INCOME,
+    cycle: 'ONCE',
+    title: 'Smartphone Bonus',
+    value: 20,
+  };
+
+  const createResponse = await server.inject({
+    method: 'POST',
+    url: '/api/incomes',
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+    body: createIncome,
   });
 
-  const payload = response.json() as IncomeDto[];
+  const getIncomesResponse = await server.inject({
+    method: 'GET',
+    url: '/api/incomes',
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
+  const payload = getIncomesResponse.json() as IncomeDto[];
 
-  t.equal(payload[0].id, incomeMock.id);
+  t.equal(createResponse.statusCode, 201);
+  t.equal(getIncomesResponse.statusCode, 202);
   t.equal(payload.length, 1);
+  t.equal(payload[0].title, createIncome.title);
 });

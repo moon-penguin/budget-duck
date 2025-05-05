@@ -29,19 +29,39 @@ t.after(async () => {
   await postgresContainer.stop();
 });
 
-t.test('should create user in database when registered', async () => {
+t.test('should register a user', async () => {
   const response = await server.inject({
     method: 'POST',
-    url: 'api/auth/register',
-    body: userMock,
+    url: '/api/auth/register',
+    body: {
+      name: userMock.name,
+      email: userMock.email,
+      password: userMock.password,
+    },
   });
 
   const createdUser = await prisma.user.findUnique({
     where: {
-      id: userMock.id,
+      email: userMock.email,
     },
   });
 
-  t.equal(userMock.id, createdUser.id);
+  t.equal(userMock.email, createdUser.email);
   t.equal(response.statusCode, 201);
+});
+
+t.test('should login the registered user', async () => {
+  const response = await server.inject({
+    method: 'POST',
+    url: '/api/auth/login',
+    body: {
+      email: userMock.email,
+      password: userMock.password,
+    },
+  });
+
+  const token = response.json().token;
+
+  t.equal(response.statusCode, 200);
+  t.equal(!!token.length, true);
 });
