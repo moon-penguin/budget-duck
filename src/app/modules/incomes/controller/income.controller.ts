@@ -82,7 +82,7 @@ export class IncomeController {
       const userId = request.user['id'] as string;
 
       await this.incomeRepository.create(reqIncome, userId);
-      return reply.code(201);
+      reply.code(201);
     } catch (error: unknown) {
       logError(error, 'income controller');
       reply.internalServerError();

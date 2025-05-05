@@ -12,7 +12,7 @@ async function init() {
   const port = applicationConfig.PORT;
 
   const server = Fastify({
-    logger: pinoLogger,
+    loggerInstance: pinoLogger,
     genReqId: (req) => {
       return (req.headers['request-id'] as string) ?? randomUUID();
     },
