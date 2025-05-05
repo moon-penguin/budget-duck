@@ -99,17 +99,13 @@ export class ExpensesController {
         return reply.badRequest();
       }
 
-      const entity = ExpenseMapper.toEntity(expenseDto, userId);
-
-      const expenseToUpdate = await this.expenseRepository.findById(
-        entity.id,
-        entity.userId
-      );
+      const expenseToUpdate = await this.expenseRepository.findById(id, userId);
 
       if (!expenseToUpdate) {
         return reply.notFound(`Expense with id:${id} not found.`);
       }
 
+      const entity = ExpenseMapper.toEntity(expenseDto, userId);
       await this.expenseRepository.update(entity);
       reply.code(202);
     } catch (error: unknown) {
@@ -126,6 +122,12 @@ export class ExpensesController {
 
       if (id !== expenseDto.id) {
         return reply.badRequest();
+      }
+
+      const expenseToDelete = await this.expenseRepository.findById(id, userId);
+
+      if (!expenseToDelete) {
+        return reply.notFound(`Expense with id:${id} not found.`);
       }
 
       const entity = ExpenseMapper.toEntity(expenseDto, userId);

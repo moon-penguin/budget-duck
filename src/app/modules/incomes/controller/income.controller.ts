@@ -99,16 +99,13 @@ export class IncomeController {
         return reply.badRequest();
       }
 
-      const entity = IncomeMapper.toEntity(reqIncome, userId);
-      const incomeToUpdate = await this.incomeRepository.findById(
-        entity.id,
-        entity.userId
-      );
+      const incomeToUpdate = await this.incomeRepository.findById(id, userId);
 
       if (!incomeToUpdate) {
         return reply.notFound(`Income with id:${id} not found.`);
       }
 
+      const entity = IncomeMapper.toEntity(reqIncome, userId);
       await this.incomeRepository.update(entity);
       return reply.code(202);
     } catch (error: unknown) {
@@ -125,6 +122,12 @@ export class IncomeController {
 
       if (id !== reqIncome.id) {
         return reply.badRequest();
+      }
+
+      const expenseToRemove = await this.incomeRepository.findById(id, userId);
+
+      if (!expenseToRemove) {
+        return reply.notFound(`Income with id:${id} not found.`);
       }
 
       const entity = IncomeMapper.toEntity(reqIncome, userId);
