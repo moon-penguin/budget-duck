@@ -37,7 +37,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.post(
     '/refresh',
     {
-      onRequest: fastify['authenticate'],
+      onRequest: fastify.authenticate,
       schema: {
         response: {
           200: LoginResponseSchema,
@@ -52,7 +52,7 @@ export default async function (fastify: FastifyInstance) {
   fastify.post(
     '/logout',
     {
-      onRequest: fastify['authenticate'],
+      onRequest: fastify.authenticate,
     },
     async (request, reply) => {
       return await userController.logout(request, reply);
@@ -61,7 +61,7 @@ export default async function (fastify: FastifyInstance) {
 
   fastify.get(
     '/me',
-    { onRequest: fastify['authenticate'] },
+    { onRequest: fastify.authenticate },
     async (request, reply) => {
       return await userController.me(request, reply);
     }

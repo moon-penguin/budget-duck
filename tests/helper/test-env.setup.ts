@@ -25,6 +25,10 @@ const testApplicationConfig: ApplicationEnvironmentConfig = {
   DB_PORT: 5432,
   DATABASE_URL: 'postgresql://test:test@localhost:5432/test_db',
   JWT_SECRET: 'secret',
+  JWT_EXPIRE_IN: '24h',
+  RATE_LIMIT_MAX: 4,
+  COOKIE_NAME: 'cookie',
+  COOKIE_SECRET: 'cookie_secret',
 };
 
 export async function initTestServer() {

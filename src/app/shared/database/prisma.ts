@@ -1,18 +1,9 @@
 import { PrismaClient } from '@prisma/client';
+import * as process from 'node:process';
 
-const prismaClient = new PrismaClient({ errorFormat: 'pretty' });
+const prismaClient = new PrismaClient({
+  errorFormat: 'pretty',
+  datasourceUrl: process.env.DATABASE_URL,
+});
 
 export default prismaClient;
-
-export class PrismaService {
-  static prismaClient(databaseUrl: string) {
-    return new PrismaClient({
-      errorFormat: 'pretty',
-      datasources: {
-        db: {
-          url: databaseUrl,
-        },
-      },
-    });
-  }
-}

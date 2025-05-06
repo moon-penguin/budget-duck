@@ -6,7 +6,7 @@ import { CreateIncomeSchema } from '../../modules/incomes/domain/schemas/create-
 import { PaginationQuerySchema } from '../../shared/schema/pagination-query.schema';
 
 export default async function (fastify: FastifyInstance) {
-  fastify.addHook('onRequest', fastify['authenticate']);
+  fastify.addHook('onRequest', fastify.authenticate);
   const incomeController = new IncomeController();
 
   /*

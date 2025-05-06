@@ -1,12 +1,20 @@
 import { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import { PrismaService } from '../../shared/database/prisma';
+import { PrismaClient } from '@prisma/client';
+import prismaClient from '../../shared/database/prisma';
+
+declare module 'fastify' {
+  export interface FastifyInstance {
+    prisma: PrismaClient;
+  }
+}
 
 export default fp(prismaORM);
 
 async function prismaORM(fastify: FastifyInstance) {
-  const databaseUrl = fastify['config'].DATABASE_URL;
-  const prisma = PrismaService.prismaClient(databaseUrl);
+  const prisma = prismaClient;
+
+  fastify.decorate('prisma', prisma);
 
   fastify.addHook('onReady', async function connect() {
     await prisma.$connect();

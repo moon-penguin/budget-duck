@@ -1,11 +1,14 @@
 import { Static, Type } from '@sinclair/typebox';
 
 const nodeConfigSchema = Type.Object({
-  NODE_ENV: Type.Union([
-    Type.Literal('development'),
-    Type.Literal('production'),
-    Type.Literal('test'),
-  ]),
+  NODE_ENV: Type.Union(
+    [
+      Type.Literal('development'),
+      Type.Literal('production'),
+      Type.Literal('test'),
+    ],
+    { default: 'production' }
+  ),
   HOST: Type.String({
     default: 'localhost',
   }),
@@ -22,10 +25,12 @@ const databaseConfigSchema = Type.Object({
   DB_HOST: Type.String({ default: 'localhost' }),
 });
 
-const authConfigSchema = Type.Object({
-  JWT_SECRET: Type.String({
-    default: 'secret',
-  }),
+const securityConfigSchema = Type.Object({
+  JWT_SECRET: Type.String(),
+  JWT_EXPIRE_IN: Type.String(),
+  RATE_LIMIT_MAX: Type.Number({ default: 100 }),
+  COOKIE_NAME: Type.String(),
+  COOKIE_SECRET: Type.String(),
 });
 
 const prismaConfigSchema = Type.Object({
@@ -38,7 +43,7 @@ export const applicationEnvironmentConfigSchema = Type.Composite(
   [
     nodeConfigSchema,
     databaseConfigSchema,
-    authConfigSchema,
+    securityConfigSchema,
     prismaConfigSchema,
   ],
   {

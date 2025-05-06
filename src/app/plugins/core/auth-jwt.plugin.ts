@@ -3,13 +3,24 @@ import fastifyJwt from '@fastify/jwt';
 import fp from 'fastify-plugin';
 import { logError } from '../../shared/utils/logError.utils';
 
+declare module 'fastify' {
+  interface FastifyInstance {
+    authenticate: (
+      request: FastifyRequest,
+      reply: FastifyReply
+    ) => Promise<void>;
+    revokeToken: (request: FastifyRequest) => void;
+    generateToken: (request: FastifyRequest) => Promise<string>;
+  }
+}
+
 export default fp(jwtAuth, { name: 'authentication-plugin' });
 
 async function jwtAuth(fastify: FastifyInstance) {
   const revokedTokens = new Map();
 
   await fastify.register(fastifyJwt, {
-    secret: fastify['config'].JWT_SECRET,
+    secret: fastify.config.JWT_SECRET,
     trusted: function isTrusted(request, decodedToken) {
       return !revokedTokens.has(decodedToken.jti);
     },
@@ -40,7 +51,7 @@ async function jwtAuth(fastify: FastifyInstance) {
       },
       {
         jti: String(Date.now()),
-        expiresIn: fastify['config'].JWT_EXPIRE_IN,
+        expiresIn: fastify.config.JWT_EXPIRE_IN,
       }
     );
     return token;

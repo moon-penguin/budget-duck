@@ -11,6 +11,7 @@ import { clearDatabase } from '../../helper/prisma-orm.helper';
 import { IncomeDto } from '../../../src/app/modules/incomes/domain/dto/income.dto';
 import { CreateIncomeDto } from '../../../src/app/modules/incomes/domain/dto/create-income.dto';
 import { TRANSACTION_TYPE } from '../../../src/app/shared/types/transaction.type';
+import { authAndGetToken } from '../../helper/auth.helper';
 
 let postgresContainer: StartedPostgreSqlContainer;
 let server: FastifyInstance;
@@ -26,28 +27,7 @@ t.before(async () => {
 
   server = await initTestServer();
 
-  // register user
-  await server.inject({
-    method: 'POST',
-    url: '/api/auth/register',
-    body: {
-      name: userMock.name,
-      email: userMock.email,
-      password: userMock.password,
-    },
-  });
-
-  // login user to get bearer token
-  const loginResponse = await server.inject({
-    method: 'POST',
-    url: '/api/auth/login',
-    body: {
-      email: userMock.email,
-      password: userMock.password,
-    },
-  });
-
-  authToken = loginResponse.json().token;
+  authToken = await authAndGetToken(server, userMock);
 });
 
 t.after(async () => {

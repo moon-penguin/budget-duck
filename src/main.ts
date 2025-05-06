@@ -1,6 +1,5 @@
 import Fastify from 'fastify';
 import { app } from './app/app';
-import applicationConfig from './app/configuration/application.config';
 import { pinoLogger } from './app/shared/utils/logger.utils';
 import closeWithGrace from 'close-with-grace';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
@@ -8,8 +7,8 @@ import * as process from 'node:process';
 import { randomUUID } from 'node:crypto';
 
 async function init() {
-  const host = applicationConfig.HOST;
-  const port = applicationConfig.PORT;
+  const host = process.env.HOST;
+  const port = Number(process.env.PORT);
 
   const server = Fastify({
     loggerInstance: pinoLogger,

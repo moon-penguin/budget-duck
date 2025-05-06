@@ -1,7 +1,16 @@
 import { FastifyInstance } from 'fastify';
 import { fastifyEnv } from '@fastify/env';
-import { applicationEnvironmentConfigSchema } from '../../configuration/types/configuration.types';
+import {
+  ApplicationEnvironmentConfig,
+  applicationEnvironmentConfigSchema,
+} from '../../configuration/types/configuration.types';
 import fp from 'fastify-plugin';
+
+declare module 'fastify' {
+  export interface FastifyInstance {
+    config: ApplicationEnvironmentConfig;
+  }
+}
 
 export default fp(envConfig);
 
