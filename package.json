@@ -34,7 +34,6 @@
     "@fastify/type-provider-typebox": "^5.1.0",
     "@prisma/client": "^5.21.1",
     "@sinclair/typebox": "^0.34.33",
-    "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
     "close-with-grace": "^2.1.0",
     "date-fns": "^4.1.0",
