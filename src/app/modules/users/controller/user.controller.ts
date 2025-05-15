@@ -55,12 +55,12 @@ export class UserController {
     }
 
     request.user = user;
-    return this.refreshHandler(request, reply);
+    return this.refresh(request, reply);
   }
 
   async logout(request: FastifyRequest, reply: FastifyReply) {
-    request['removeToken']();
-    return reply.code(204);
+    await request.revokeToken();
+    reply.code(204);
   }
 
   async refresh(request: FastifyRequest, reply: FastifyReply) {
@@ -68,8 +68,8 @@ export class UserController {
   }
 
   private async refreshHandler(request: FastifyRequest, reply: FastifyReply) {
-    const token = await request['generateToken']();
+    const { accessToken } = await request.generateToken();
     reply.code(200);
-    return { token };
+    return { token: accessToken };
   }
 }

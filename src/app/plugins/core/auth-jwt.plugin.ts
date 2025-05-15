@@ -1,7 +1,13 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import fastifyJwt from '@fastify/jwt';
 import fp from 'fastify-plugin';
 import { logError } from '../../shared/utils/logError.utils';
+import fastifyJwt from '@fastify/jwt';
+
+interface UserPayload {
+  id: number;
+  name: string;
+  email: string;
+}
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -9,20 +15,28 @@ declare module 'fastify' {
       request: FastifyRequest,
       reply: FastifyReply
     ) => Promise<void>;
-    revokeToken: (request: FastifyRequest) => void;
-    generateToken: (request: FastifyRequest) => Promise<string>;
+  }
+  interface FastifyRequest {
+    generateToken: () => Promise<{ accessToken: string }>;
+    revokeToken: () => Promise<void>;
   }
 }
 
 export default fp(jwtAuth, { name: 'authentication-plugin' });
 
 async function jwtAuth(fastify: FastifyInstance) {
-  const revokedTokens = new Map();
-
   await fastify.register(fastifyJwt, {
     secret: fastify.config.JWT_SECRET,
-    trusted: function isTrusted(request, decodedToken) {
-      return !revokedTokens.has(decodedToken.jti);
+    trusted: async (request, decodedToken) => {
+      const user = decodedToken as UserPayload;
+      const token = request.headers.authorization.split(' ')[1];
+      const isValid = await fastify.redis_validate(user.id, token);
+      return isValid;
+    },
+    sign: {
+      expiresIn: fastify.config.JWT_EXPIRE_IN,
+      iss: fastify.config.JWT_TOKEN_ISSUER,
+      aud: fastify.config.JWT_TOKEN_AUDIENCE,
     },
   });
 
@@ -38,22 +52,32 @@ async function jwtAuth(fastify: FastifyInstance) {
     }
   );
 
-  fastify.decorateRequest('revokeToken', function () {
-    revokedTokens.set(this.user['jti'], true);
+  fastify.decorateRequest('revokeToken', async function () {
+    await revokeToken(fastify, this.user['id']);
   });
 
   fastify.decorateRequest('generateToken', async function () {
-    const token = fastify.jwt.sign(
-      {
-        id: String(this.user['id']),
-        username: this.user['name'],
-        email: this.user['email'],
-      },
-      {
-        jti: String(Date.now()),
-        expiresIn: fastify.config.JWT_EXPIRE_IN,
-      }
-    );
-    return token;
+    return await generateToken(this, fastify);
   });
+}
+
+async function generateToken(
+  request: FastifyRequest,
+  fastify: FastifyInstance
+) {
+  const payload: UserPayload = {
+    id: request.user['id'],
+    name: request.user['name'],
+    email: request.user['email'],
+  };
+
+  const accessToken = fastify.jwt.sign(payload);
+
+  await fastify.redis_insert(request.user['id'], accessToken);
+
+  return { accessToken };
+}
+
+async function revokeToken(fastify: FastifyInstance, userId: number) {
+  await fastify.redis_invalidate(userId);
 }

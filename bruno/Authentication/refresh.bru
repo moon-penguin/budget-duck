@@ -6,10 +6,14 @@ meta {
 
 post {
   url: {{baseUrl}}/auth/refresh
-  body: none
+  body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJ1c2VybmFtZSI6IlJvYmJ5IFB1cHBhIiwiZW1haWwiOiJwdXBzQHJvYi5kZSIsImp0aSI6IjE3NDYwMTcwMjk0NDAiLCJpYXQiOjE3NDYwMTcwMjl9.ShfJyByHOPayLvy5o2Ylo1ME0Vsq2jt9gc-JvSX8uK8
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJuYW1lIjoiUm9iYnkgUHVwcGEiLCJlbWFpbCI6InB1cHNAcm9iLmRlIiwiYXVkIjoibG9jYWxob3N0IiwiaXNzIjoibG9jYWxob3N0IiwiaWF0IjoxNzQ3MzAwMzc5LCJleHAiOjE3NDczMDA2Nzl9.Qc_hWGbXL0muVlk-aspuIc8PS1yLNd5BN20GmcGxiEs
+}
+
+body:json {
+  {}
 }
