@@ -1,17 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import fp from 'fastify-plugin';
-import { FastifyRedis } from '@fastify/redis';
 
-declare module 'fastify' {
-  interface FastifyInstance {
-    redis: FastifyRedis;
-  }
-}
+// TODO: add jtw to cookie and use refreshToken
 
-export default fp(session, { name: 'cookie' });
+export default fp(cookie, { name: 'cookie' });
 
-async function session(fastify: FastifyInstance) {
+async function cookie(fastify: FastifyInstance) {
   await fastify.register(fastifyCookie, {
     secret: fastify.config.COOKIE_SECRET,
     hook: 'onRequest',
