@@ -1,7 +1,10 @@
 import { FastifyInstance } from 'fastify';
 import { UserController } from '../../modules/users/controller/user.controller';
 import { LoginUserSchema } from '../../modules/users/domain/schemas/loginUser.schema';
-import { LoginResponseSchema } from '../../modules/users/domain/schemas/loginResponse.schema';
+import {
+  LoginResponseSchema,
+  RefreshResponseSchema,
+} from '../../modules/users/domain/schemas/loginResponse.schema';
 import { CreateUserSchema } from '../../modules/users/domain/schemas/createUser.schema';
 
 export default async function (fastify: FastifyInstance) {
@@ -40,7 +43,7 @@ export default async function (fastify: FastifyInstance) {
       onRequest: fastify.authenticate,
       schema: {
         response: {
-          200: LoginResponseSchema,
+          200: RefreshResponseSchema,
         },
       },
     },

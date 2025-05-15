@@ -17,7 +17,7 @@ declare module 'fastify' {
     ) => Promise<void>;
   }
   interface FastifyRequest {
-    generateToken: () => Promise<{ accessToken: string }>;
+    generateToken: () => Promise<{ accessToken: string; refreshToken: string }>;
     revokeToken: () => Promise<void>;
   }
 }
@@ -37,6 +37,10 @@ async function jwtAuth(fastify: FastifyInstance) {
       expiresIn: fastify.config.JWT_EXPIRE_IN,
       iss: fastify.config.JWT_TOKEN_ISSUER,
       aud: fastify.config.JWT_TOKEN_AUDIENCE,
+    },
+    cookie: {
+      cookieName: fastify.config.COOKIE_NAME,
+      signed: false,
     },
   });
 
@@ -72,10 +76,13 @@ async function generateToken(
   };
 
   const accessToken = fastify.jwt.sign(payload);
+  const refreshToken = fastify.jwt.sign(payload, {
+    expiresIn: fastify.config.JWT_REFRESH_TOKEN_TTL,
+  });
 
-  await fastify.redis_insert(request.user['id'], accessToken);
+  await fastify.redis_insert(request.user['id'], refreshToken);
 
-  return { accessToken };
+  return { accessToken, refreshToken };
 }
 
 async function revokeToken(fastify: FastifyInstance, userId: number) {

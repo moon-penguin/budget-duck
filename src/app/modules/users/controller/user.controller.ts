@@ -3,6 +3,10 @@ import { UserRepository } from '../repository/user.repository';
 import { CreateUserDto } from '../domain/dto/create-user.dto';
 import { LoginUserDto } from '../domain/dto/login-user.dto';
 import { UserService } from '../services/user.service';
+import {
+  LoginResponseDto,
+  RefreshResponseDto,
+} from '../domain/schemas/loginResponse.schema';
 
 export class UserController {
   private userRepository: UserRepository;
@@ -37,7 +41,10 @@ export class UserController {
     }
   }
 
-  async login(request: FastifyRequest, reply: FastifyReply) {
+  async login(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<LoginResponseDto> {
     const userDto = request.body as LoginUserDto;
     const user = await this.userRepository.findByEmail(userDto.email);
 
@@ -55,7 +62,9 @@ export class UserController {
     }
 
     request.user = user;
-    return this.refresh(request, reply);
+    reply.code(200);
+
+    return await this.tokenHandler(request);
   }
 
   async logout(request: FastifyRequest, reply: FastifyReply) {
@@ -63,13 +72,19 @@ export class UserController {
     reply.code(204);
   }
 
-  async refresh(request: FastifyRequest, reply: FastifyReply) {
-    return this.refreshHandler(request, reply);
+  async refresh(
+    request: FastifyRequest,
+    reply: FastifyReply
+  ): Promise<RefreshResponseDto> {
+    const { refreshToken } = await this.tokenHandler(request);
+    reply.code(200);
+    return { refreshToken: refreshToken };
   }
 
-  private async refreshHandler(request: FastifyRequest, reply: FastifyReply) {
-    const { accessToken } = await request.generateToken();
-    reply.code(200);
-    return { token: accessToken };
+  private async tokenHandler(
+    request: FastifyRequest
+  ): Promise<LoginResponseDto> {
+    const { accessToken, refreshToken } = await request.generateToken();
+    return { token: accessToken, refreshToken };
   }
 }

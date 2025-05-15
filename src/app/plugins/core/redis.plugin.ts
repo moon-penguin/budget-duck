@@ -17,7 +17,6 @@ async function redis(fastify: FastifyInstance) {
   await fastify.register(fastifyRedis, {
     host: fastify.config.REDIS_HOST,
     port: fastify.config.REDIS_PORT,
-    password: fastify.config.REDIS_PASSWORD,
   });
 
   fastify.addHook('onReady', async function () {

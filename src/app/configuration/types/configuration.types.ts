@@ -29,7 +29,7 @@ const jwtConfigSchema = Type.Object({
   JWT_SECRET: Type.String(),
   JWT_EXPIRE_IN: Type.String({ default: '5min' }),
   JWT_ACCESS_TOKEN_TTL: Type.Number({ default: 3600 }),
-  JWT_REFRESH_TOKEN_TTL: Type.Number({ default: 86400 }),
+  JWT_REFRESH_TOKEN_TTL: Type.String({ default: '24h' }),
   JWT_TOKEN_ISSUER: Type.String({
     default: 'localhost',
   }),
