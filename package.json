@@ -55,6 +55,7 @@
     "@swc/core": "^1.5.7",
     "@swc/helpers": "^0.5.11",
     "@testcontainers/postgresql": "^10.16.0",
+    "@testcontainers/redis": "^10.26.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^18.16.9",
     "esbuild": "^0.19.2",

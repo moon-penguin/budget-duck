@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import {
   initPostgresContainer,
   initTestServer,
+  startRedisContainer,
 } from '../../helper/test-env.setup';
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { UserBuilder } from '../../builder/User.builder';
@@ -12,8 +13,10 @@ import { IncomeDto } from '../../../src/app/modules/incomes/domain/dto/income.dt
 import { CreateIncomeDto } from '../../../src/app/modules/incomes/domain/dto/create-income.dto';
 import { TRANSACTION_TYPE } from '../../../src/app/shared/types/transaction.type';
 import { authAndGetToken } from '../../helper/auth.helper';
+import { StartedRedisContainer } from '@testcontainers/redis';
 
 let postgresContainer: StartedPostgreSqlContainer;
+let redisContainer: StartedRedisContainer;
 let server: FastifyInstance;
 let prisma: PrismaClient;
 let authToken: string;
@@ -21,6 +24,7 @@ let authToken: string;
 const userMock = new UserBuilder().build();
 
 t.before(async () => {
+  redisContainer = await startRedisContainer();
   const { container, prismaOrm } = await initPostgresContainer();
   postgresContainer = container;
   prisma = prismaOrm;
@@ -33,6 +37,7 @@ t.before(async () => {
 t.after(async () => {
   await clearDatabase(prisma);
   await server.close();
+  await redisContainer.stop();
   await postgresContainer.stop();
 });
 
@@ -68,4 +73,5 @@ t.test('create income', async () => {
   t.equal(getIncomesResponse.statusCode, 202);
   t.equal(payload.length, 1);
   t.equal(payload[0].title, createIncome.title);
+  t.end();
 });

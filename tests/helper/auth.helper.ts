@@ -26,5 +26,5 @@ export async function authAndGetToken(
     },
   });
 
-  return loginResponse.json().token as string;
+  return loginResponse.json().refreshToken as string;
 }

@@ -5,6 +5,7 @@ import { exec } from 'node:child_process';
 import { ApplicationEnvironmentConfig } from '../../src/app/configuration/types/configuration.types';
 import Fastify from 'fastify';
 import { app } from '../../src/app/app';
+import { RedisContainer } from '@testcontainers/redis';
 
 type DatabaseConnectionConfig = {
   host: string;
@@ -24,11 +25,19 @@ const testApplicationConfig: ApplicationEnvironmentConfig = {
   DB_PASSWORD: 'test',
   DB_PORT: 5432,
   DATABASE_URL: 'postgresql://test:test@localhost:5432/test_db',
+  REDIS_PORT: 6379,
+  REDIS_HOST: 'localhost',
+  REDIS_PASSWORD: 'password',
   JWT_SECRET: 'secret',
   JWT_EXPIRE_IN: '24h',
+  JWT_TOKEN_ISSUER: 'localhost',
+  JWT_TOKEN_AUDIENCE: 'localhost',
+  JWT_REFRESH_TOKEN_TTL: '24h',
+  JWT_ACCESS_TOKEN_TTL: 86400,
   RATE_LIMIT_MAX: 4,
   COOKIE_NAME: 'cookie',
   COOKIE_SECRET: 'cookie_secret',
+  COOKIE_SECURED: true,
 };
 
 export async function initTestServer() {
@@ -106,4 +115,22 @@ async function startPrismaClient(databaseUrl: string) {
 
 function buildDatabaseUrlFrom(config: DatabaseConnectionConfig) {
   return `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.name}`;
+}
+
+export async function startRedisContainer() {
+  const container = await new RedisContainer()
+    .withEnvironment({
+      REDIS_HOST: testApplicationConfig.REDIS_HOST,
+      REDIS_PORT: testApplicationConfig.REDIS_PORT.toString(),
+    })
+    .withExposedPorts(testApplicationConfig.REDIS_PORT)
+    .start();
+
+  const host = container.getHost();
+  const port = container.getPort();
+
+  process.env.REDIS_HOST = host;
+  process.env.REDIS_PORT = port.toString();
+
+  return container;
 }

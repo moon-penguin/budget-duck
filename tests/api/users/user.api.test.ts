@@ -6,9 +6,12 @@ import t from 'tap';
 import {
   initPostgresContainer,
   initTestServer,
+  startRedisContainer,
 } from '../../helper/test-env.setup';
 import { clearDatabase } from '../../helper/prisma-orm.helper';
+import { StartedRedisContainer } from '@testcontainers/redis';
 
+let redisContainer: StartedRedisContainer;
 let postgresContainer: StartedPostgreSqlContainer;
 let server: FastifyInstance;
 let prisma: PrismaClient;
@@ -16,6 +19,7 @@ let prisma: PrismaClient;
 const userMock = new UserBuilder().build();
 
 t.before(async () => {
+  redisContainer = await startRedisContainer();
   const { container, prismaOrm } = await initPostgresContainer();
   postgresContainer = container;
   prisma = prismaOrm;
@@ -26,6 +30,7 @@ t.before(async () => {
 t.after(async () => {
   await clearDatabase(prisma);
   await server.close();
+  await redisContainer.stop();
   await postgresContainer.stop();
 });
 
@@ -48,6 +53,7 @@ t.test('should register a user', async () => {
 
   t.equal(userMock.email, createdUser.email);
   t.equal(response.statusCode, 201);
+  t.end();
 });
 
 t.test('should login the registered user', async () => {
@@ -60,8 +66,9 @@ t.test('should login the registered user', async () => {
     },
   });
 
-  const token = response.json().token;
+  const token = response.json().refreshToken as string;
 
   t.equal(response.statusCode, 200);
   t.equal(!!token.length, true);
+  t.end();
 });

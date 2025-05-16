@@ -19,15 +19,6 @@ async function redis(fastify: FastifyInstance) {
     port: fastify.config.REDIS_PORT,
   });
 
-  fastify.addHook('onReady', async function () {
-    fastify.log.info('[ REDIS ] connection successful');
-  });
-
-  fastify.addHook('onClose', async function () {
-    await fastify.redis.quit();
-    fastify.log.info('[ REDIS ] closed successful');
-  });
-
   fastify.decorate('redis_insert', insert);
   fastify.decorate('redis_validate', validate);
   fastify.decorate('redis_invalidate', invalidate);
