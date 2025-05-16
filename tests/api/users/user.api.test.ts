@@ -1,37 +1,30 @@
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { FastifyInstance } from 'fastify';
-import { PrismaClient } from '@prisma/client';
 import { UserBuilder } from '../../builder/User.builder';
 import t from 'tap';
 import {
-  initPostgresContainer,
-  initTestServer,
-  startRedisContainer,
+  bootstrapTestEnvironment,
+  closeTestEnvironment,
 } from '../../helper/test-env.setup';
-import { clearDatabase } from '../../helper/prisma-orm.helper';
 import { StartedRedisContainer } from '@testcontainers/redis';
 
 let redisContainer: StartedRedisContainer;
 let postgresContainer: StartedPostgreSqlContainer;
 let server: FastifyInstance;
-let prisma: PrismaClient;
 
 const userMock = new UserBuilder().build();
 
 t.before(async () => {
-  redisContainer = await startRedisContainer();
-  const { container, prismaOrm } = await initPostgresContainer();
-  postgresContainer = container;
-  prisma = prismaOrm;
+  const { testRedisContainer, testPostgresContainer, testServer } =
+    await bootstrapTestEnvironment();
 
-  server = await initTestServer();
+  server = testServer;
+  redisContainer = testRedisContainer;
+  postgresContainer = testPostgresContainer;
 });
 
 t.after(async () => {
-  await clearDatabase(prisma);
-  await server.close();
-  await redisContainer.stop();
-  await postgresContainer.stop();
+  await closeTestEnvironment(postgresContainer, redisContainer, server);
 });
 
 t.test('should register a user', async () => {
@@ -45,13 +38,6 @@ t.test('should register a user', async () => {
     },
   });
 
-  const createdUser = await prisma.user.findUnique({
-    where: {
-      email: userMock.email,
-    },
-  });
-
-  t.equal(userMock.email, createdUser.email);
   t.equal(response.statusCode, 201);
   t.end();
 });

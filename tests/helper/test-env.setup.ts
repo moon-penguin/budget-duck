@@ -1,11 +1,14 @@
-import { PostgreSqlContainer } from '@testcontainers/postgresql';
+import {
+  PostgreSqlContainer,
+  StartedPostgreSqlContainer,
+} from '@testcontainers/postgresql';
 import { PrismaClient } from '@prisma/client';
 import { promisify } from 'node:util';
 import { exec } from 'node:child_process';
 import { ApplicationEnvironmentConfig } from '../../src/app/configuration/types/configuration.types';
-import Fastify from 'fastify';
+import Fastify, { FastifyInstance } from 'fastify';
 import { app } from '../../src/app/app';
-import { RedisContainer } from '@testcontainers/redis';
+import { RedisContainer, StartedRedisContainer } from '@testcontainers/redis';
 
 type DatabaseConnectionConfig = {
   host: string;
@@ -40,7 +43,7 @@ const testApplicationConfig: ApplicationEnvironmentConfig = {
   COOKIE_SECURED: true,
 };
 
-export async function initTestServer() {
+async function initTestServer() {
   const server = Fastify({
     logger: {
       level: 'error',
@@ -60,7 +63,7 @@ export async function initTestServer() {
 
 const execAsync = promisify(exec);
 
-export async function initPostgresContainer() {
+async function initPostgresContainer() {
   const container = await new PostgreSqlContainer()
     .withEnvironment({
       POSTGRES_USER: testApplicationConfig.DB_USER,
@@ -117,7 +120,7 @@ function buildDatabaseUrlFrom(config: DatabaseConnectionConfig) {
   return `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.name}`;
 }
 
-export async function startRedisContainer() {
+async function startRedisContainer() {
   const container = await new RedisContainer()
     .withEnvironment({
       REDIS_HOST: testApplicationConfig.REDIS_HOST,
@@ -133,4 +136,23 @@ export async function startRedisContainer() {
   process.env.REDIS_PORT = port.toString();
 
   return container;
+}
+
+export async function bootstrapTestEnvironment() {
+  const { container: testPostgresContainer } = await initPostgresContainer();
+  const testRedisContainer = await startRedisContainer();
+
+  const testServer = await initTestServer();
+
+  return { testPostgresContainer, testRedisContainer, testServer };
+}
+
+export async function closeTestEnvironment(
+  postgresContainer: StartedPostgreSqlContainer,
+  redisContainer: StartedRedisContainer,
+  server: FastifyInstance
+) {
+  await postgresContainer.stop();
+  await redisContainer.stop();
+  await server.close();
 }

@@ -1,14 +1,11 @@
 import { FastifyInstance } from 'fastify';
 import t from 'tap';
-import { PrismaClient } from '@prisma/client';
 import {
-  initPostgresContainer,
-  initTestServer,
-  startRedisContainer,
+  bootstrapTestEnvironment,
+  closeTestEnvironment,
 } from '../../helper/test-env.setup';
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { UserBuilder } from '../../builder/User.builder';
-import { clearDatabase } from '../../helper/prisma-orm.helper';
 import { IncomeDto } from '../../../src/app/modules/incomes/domain/dto/income.dto';
 import { CreateIncomeDto } from '../../../src/app/modules/incomes/domain/dto/create-income.dto';
 import { TRANSACTION_TYPE } from '../../../src/app/shared/types/transaction.type';
@@ -18,27 +15,23 @@ import { StartedRedisContainer } from '@testcontainers/redis';
 let postgresContainer: StartedPostgreSqlContainer;
 let redisContainer: StartedRedisContainer;
 let server: FastifyInstance;
-let prisma: PrismaClient;
 let authToken: string;
 
 const userMock = new UserBuilder().build();
 
 t.before(async () => {
-  redisContainer = await startRedisContainer();
-  const { container, prismaOrm } = await initPostgresContainer();
-  postgresContainer = container;
-  prisma = prismaOrm;
+  const { testRedisContainer, testPostgresContainer, testServer } =
+    await bootstrapTestEnvironment();
 
-  server = await initTestServer();
+  server = testServer;
+  redisContainer = testRedisContainer;
+  postgresContainer = testPostgresContainer;
 
   authToken = await authAndGetToken(server, userMock);
 });
 
 t.after(async () => {
-  await clearDatabase(prisma);
-  await server.close();
-  await redisContainer.stop();
-  await postgresContainer.stop();
+  await closeTestEnvironment(postgresContainer, redisContainer, server);
 });
 
 t.test('create income', async () => {
