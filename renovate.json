@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^@fastify/", "fastify"],
+      "groupName": "fastify-packages"
+    },
+    {
+      "matchPackagePatterns": ["^@nx/", "nx"],
+      "groupName": "nx-packages"
+    },
+    {
+      "matchPackagePatterns": ["^@prisma/", "prisma"],
+      "groupName": "prisma-packages"
+    }
+  ],
+  "timezone": "Europe/Berlin",
+  "schedule": ["every weekend"],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
+  "commitMessagePrefix": "chore(deps):"
+}
