@@ -3,6 +3,7 @@
 /coverage
 /.nx/cache
 /.nx/workspace-data
+/.github
 docker-compose.yml
 renovate.json
 README.md
