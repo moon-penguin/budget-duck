@@ -27,11 +27,12 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm ci
 
+      # cache node_modules for all jobs
       - name: Cache node_modules
         uses: actions/cache@v4
         id: node-modules-cache
         with:
-          path: node_modules
+          path: '**/node_modules'
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
   lint:
@@ -52,7 +53,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: '**/node_modules'
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Linting-Prüfung
@@ -76,7 +77,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: '**/node_modules'
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Format-Prüfung
@@ -100,7 +101,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: '**/node_modules'
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Prisma generieren
@@ -113,7 +114,7 @@ jobs:
       - name: Cache build output
         uses: actions/cache@v4
         with:
-          path: dist
+          path: '**/dist'
           key: ${{ runner.os }}-build-${{ github.sha }}
 
   test:
@@ -162,7 +163,7 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: '**/node_modules'
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Restore build output
