@@ -10,38 +10,36 @@ on:
 
   workflow_dispatch:
 
+env:
+  PORT: 3000
+  HOST: localhost
+  NODE_ENV: production
+  DB_PORT: 5432
+  DB_NAME: budget_db
+  DB_USER: admin
+  DB_PASSWORD: test
+  DB_HOST: localhost
+  DB_POSTGRES: budget_db
+  DATABASE_URL: "postgresql://admin:test@localhost:5432/budget_db?schema=public"
+  REDIS_HOST: localhost
+  REDIS_PORT: 6379
+  JWT_SECRET: secret
+  JWT_EXPIRE_IN: 5min
+  JWT_REFRESH_TOKEN_TTL: 24h
+  JWT_ACCESS_TOKEN_TTL: 3600
+  JWT_TOKEN_ISSUER: localhost
+  JWT_TOKEN_AUDIENCE: localhost
+  RATE_LIMIT_MAX: 1000
+  COOKIE_SECRET: cookieSecret
+  COOKIE_NAME: cookie
+  COOKIE_SECURED: false
+
 jobs:
-  validate:
-    name: Validierung
+  prepare:
+    name: Vorbereitung
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:6
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
-      - name: Checkout Respository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Node.js Setup
@@ -53,27 +51,178 @@ jobs:
       - name: Abhängigkeiten installieren
         run: npm ci
 
-      - name: Linting Prüfung
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+  lint:
+    name: Linting
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Node.js Setup
+        uses: actions/checkout@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # Restore cached node_modules
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Linting-Prüfung
         run: npm run lint
 
-      - name: Format Prüfung
+  format:
+    name: Format-Check
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Node.js Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # Restore cached node_modules
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Format-Prüfung
         run: npm run format:check
+
+  build:
+    name: Build
+    needs: [ lint, format ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Node.js Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # Restore cached node_modules
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Prisma generieren
         run: npx prisma generate
 
-      - name: Prisma Migrationen anwenden
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
-
-      - name: Build Anwendung
+      - name: Build der Anwendung
         run: npm run build
 
-      - name: Integrationstests
-        run: npm run test
+      # Cache build output
+      - name: Cache build output
+        uses: actions/cache@v4
+        with:
+          path: dist
+          key: ${{ runner.os }}-build-${{ github.sha }}
+
+  test:
+    name: Integration Tests
+    needs: build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
-          REDIS_URL: redis://localhost:6379
-          JWT_SECRET: test-secret-key
-          NODE_ENV: test
+          POSTGRES_PORT: ${{ env.DB_PORT }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
+        ports:
+          - ${{ env.POSTGRES_PORT }}:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:6
+        ports:
+          - ${{ env.REDIS_PORT}}
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Node.js Setup
+        uses: actions/checkout@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Restore node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Restore build output
+        uses: actions/checkout@v4
+        with:
+          path: dist
+          key: $${{ runner.os }}-build-${{ github.sha }}
+
+      - name: Generate Prisma
+        run: npx prisma generate
+
+      - name: Run prisma migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - name: Run integration tests
+        run: npm test
+        env:
+          PORT: ${{ env.PORT }}
+          HOST: ${{ env.HOST }}
+          NODE_ENV: ${{ env.NODE_ENV }}
+          DB_PORT: ${{ env.DB_PORT }}
+          DB_NAME: ${{ env.DB_NAME }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+          DB_HOST: ${{ env.DB_HOST }}
+          DB_POSTGRES: ${{ env.DB_POSTGRES }}
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          REDIS_HOST: ${{ env.REDIS_HOST }}
+          REDIS_PORT: ${{ env.REDIS_PORT }}
+          JWT_SECRET: ${{ env.JWT_SECRET }}
+          JWT_EXPIRE_IN: ${{ env.JWT_EXPIRE_IN }}
+          JWT_REFRESH_TOKEN_TTL: ${{ env.JWT_REFRESH_TOKEN_TTL }}
+          JWT_ACCESS_TOKEN_TTL: ${{ env.JWT_ACCESS_TOKEN_TTL }}
+          JWT_TOKEN_ISSUER: ${{ env.JWT_TOKEN_ISSUER }}
+          JWT_TOKEN_AUDIENCE: ${{ env.JWT_TOKEN_AUDIENCE }}
+          RATE_LIMIT_MAX: ${{ env.RATE_LIMIT_MAX }}
+          COOKIE_SECRET: ${{ env.COOKIE_SECRET }}
+          COOKIE_NAME: ${{ env.COOKIE_NAME }}
+          COOKIE_SECURED: ${{ env.COOKIE_SECURED }}
