@@ -10,29 +10,29 @@ on:
 
   workflow_dispatch:
 
-env:
-  PORT: 3000
-  HOST: localhost
-  NODE_ENV: production
-  DB_PORT: 5432
-  DB_NAME: budget_db
-  DB_USER: admin
-  DB_PASSWORD: test
-  DB_HOST: localhost
-  DB_POSTGRES: budget_db
-  DATABASE_URL: "postgresql://admin:test@localhost:5432/budget_db?schema=public"
-  REDIS_HOST: localhost
-  REDIS_PORT: 6379
-  JWT_SECRET: secret
-  JWT_EXPIRE_IN: 5min
-  JWT_REFRESH_TOKEN_TTL: 24h
-  JWT_ACCESS_TOKEN_TTL: 3600
-  JWT_TOKEN_ISSUER: localhost
-  JWT_TOKEN_AUDIENCE: localhost
-  RATE_LIMIT_MAX: 1000
-  COOKIE_SECRET: cookieSecret
-  COOKIE_NAME: cookie
-  COOKIE_SECURED: false
+  env:
+    PORT: 3000
+    HOST: localhost
+    NODE_ENV: production
+    DB_PORT: 5432
+    DB_NAME: budget_db
+    DB_USER: admin
+    DB_PASSWORD: test
+    DB_HOST: localhost
+    DB_POSTGRES: budget_db
+    DATABASE_URL: "postgresql://admin:test@localhost:5432/budget_db?schema=public"
+    REDIS_HOST: localhost
+    REDIS_PORT: 6379
+    JWT_SECRET: secret
+    JWT_EXPIRE_IN: 5min
+    JWT_REFRESH_TOKEN_TTL: 24h
+    JWT_ACCESS_TOKEN_TTL: 3600
+    JWT_TOKEN_ISSUER: localhost
+    JWT_TOKEN_AUDIENCE: localhost
+    RATE_LIMIT_MAX: 1000
+    COOKIE_SECRET: cookieSecret
+    COOKIE_NAME: cookie
+    COOKIE_SECURED: false
 
 jobs:
   prepare:
@@ -149,12 +149,11 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_PORT: ${{ env.DB_PORT }}
           POSTGRES_USER: ${{ env.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
           POSTGRES_DB: ${{ env.DB_NAME }}
         ports:
-          - ${{ env.POSTGRES_PORT }}:5432
+          - ${{ env.DB_PORT }}:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
