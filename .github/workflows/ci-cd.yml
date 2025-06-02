@@ -141,7 +141,7 @@ jobs:
           POSTGRES_PASSWORD: test
           POSTGRES_DB: budget_db
         ports:
-          - $DB_PORT:5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -153,7 +153,7 @@ jobs:
         env:
           REDIS_PORT: 6379
         ports:
-          - $REDIS_PORT
+          - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
