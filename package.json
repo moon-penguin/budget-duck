@@ -15,7 +15,7 @@
     "db:ui": "npx prisma studio",
     "db:seed": "npx prisma db seed",
     "db:format": "npx prisma format",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "private": true,
   "dependencies": {
