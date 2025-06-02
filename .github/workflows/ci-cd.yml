@@ -149,6 +149,7 @@ jobs:
       postgres:
         image: postgres:14
         env:
+          DB_PORT: ${{ env.DB_PORT }}
           POSTGRES_USER: ${{ env.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
           POSTGRES_DB: ${{ env.DB_NAME }}
@@ -162,6 +163,8 @@ jobs:
 
       redis:
         image: redis:6
+        env:
+          REDIS_PORT: ${{ env.REDIS_PORT }}
         ports:
           - ${{ env.REDIS_PORT}}
         options: >-
