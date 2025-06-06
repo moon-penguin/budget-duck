@@ -1,24 +1,21 @@
-import { Income, PrismaClient } from '@prisma/client';
+import { Income, Prisma } from '@prisma/client';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import { logError } from '../../../shared/utils/logError.utils';
 import prismaClient from '../../../shared/database/prisma';
 import { CreateIncomeDto } from '../domain/dto/create-income.dto';
 import { PaginationQueryDto } from '../../../shared/schema/pagination-query.schema';
 
-export class IncomeRepository {
-  private database: PrismaClient;
+export class IncomeService {
+  private readonly database: Prisma.IncomeDelegate;
 
   constructor() {
-    this.database = prismaClient;
+    this.database = prismaClient.income;
   }
 
-  async findAll(
-    userId: string,
-    paginationQuery: PaginationQueryDto
-  ): Promise<Income[]> {
+  async findAll(userId: string, paginationQuery: PaginationQueryDto) {
     try {
       const { limit, offset } = paginationQuery;
-      return await this.database.income.findMany({
+      return await this.database.findMany({
         orderBy: {
           id: 'asc',
         },
@@ -31,13 +28,13 @@ export class IncomeRepository {
         take: limit,
       });
     } catch (error: unknown) {
-      logError(error, 'income repository');
+      logError(error, 'income service');
     }
   }
 
-  async findById(id: number, userId: string): Promise<Income | null> {
+  async findById(id: number, userId: string) {
     try {
-      return await this.database.income.findUnique({
+      return await this.database.findUnique({
         where: {
           id: id,
           AND: {
@@ -48,45 +45,77 @@ export class IncomeRepository {
         },
       });
     } catch (error: unknown) {
-      logError(error, 'income repository');
+      logError(error, 'income service');
     }
   }
 
   async create(income: CreateIncomeDto, userId: string): Promise<Income> {
     try {
-      return await this.database.income.create({
+      return await this.database.create({
         data: {
           ...income,
           userId,
         },
       });
     } catch (error: unknown) {
-      logError(error, 'income repository');
+      logError(error, 'income service');
     }
   }
 
   async update(income: Income): Promise<Income> {
     try {
-      return await this.database.income.update({
-        data: income,
+      const recordToUpdate = await this.database.findUnique({
         where: {
           id: income.id,
+          AND: {
+            userId: income.userId,
+          },
+        },
+      });
+
+      if (!recordToUpdate) {
+        return null;
+      }
+
+      return await this.database.update({
+        data: income,
+        where: {
+          id: recordToUpdate.id,
+          AND: {
+            userId: recordToUpdate.userId,
+          },
         },
       });
     } catch (error: unknown) {
-      logError(error, 'income repository');
+      logError(error, 'income service');
     }
   }
 
   async delete(income: Income): Promise<Income> {
     try {
-      return await this.database.income.delete({
+      const recordToDelete = await this.database.findUnique({
         where: {
           id: income.id,
+          AND: {
+            userId: income.userId,
+          },
+        },
+      });
+
+      if (!recordToDelete) {
+        return null;
+      }
+
+      return await this.database.delete({
+        where: {
+          id: recordToDelete.id,
+          AND: {
+            userId: recordToDelete.userId,
+          },
         },
       });
     } catch (error: unknown) {
-      logError(error, 'income repository');
+      logError(error, 'income service');
     }
   }
 
@@ -95,7 +124,7 @@ export class IncomeRepository {
     const lastDayOfCurrentMonth = lastDayOfMonth(month);
 
     try {
-      return this.database.income.findMany({
+      return this.database.findMany({
         where: {
           date: {
             gte: firstDayOfCurrentMonth,
@@ -109,7 +138,7 @@ export class IncomeRepository {
         },
       });
     } catch (error: unknown) {
-      logError(error, 'income repository');
+      logError(error, 'income service');
     }
   }
 }
