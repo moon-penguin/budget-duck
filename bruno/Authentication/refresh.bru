@@ -7,11 +7,7 @@ meta {
 post {
   url: {{baseUrl}}/auth/refresh
   body: json
-  auth: bearer
-}
-
-auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJuYW1lIjoiUm9iYnkgUHVwcGEiLCJlbWFpbCI6InB1cHNAcm9iLmRlIiwiaWF0IjoxNzQ3MzA5Njk3LCJleHAiOjE3NDczOTYwOTd9.p65KYfKo_NirvwASjI25wkEfJDFZS0MuPxPO5nu5ICs
+  auth: inherit
 }
 
 body:json {

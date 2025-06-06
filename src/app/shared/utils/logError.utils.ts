@@ -7,5 +7,10 @@ export function logError(error: unknown, title: string) {
       msg: `[ ${title} ] ${error.message}`,
       stack: error.stack,
     });
+  } else {
+    pinoLogger.error({
+      error: error,
+      title: title,
+    });
   }
 }

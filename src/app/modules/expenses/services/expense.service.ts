@@ -1,24 +1,21 @@
-import { Expense, PrismaClient } from '@prisma/client';
+import { Expense, Prisma } from '@prisma/client';
 import { logError } from '../../../shared/utils/logError.utils';
 import { lastDayOfMonth, startOfMonth } from 'date-fns';
 import prismaClient from '../../../shared/database/prisma';
 import { CreateExpenseDto } from '../domain/dto/create-expense.dto';
 import { PaginationQueryDto } from '../../../shared/schema/pagination-query.schema';
 
-export class ExpenseRepository {
-  private database: PrismaClient;
+export class ExpenseService {
+  private readonly database: Prisma.ExpenseDelegate;
 
   constructor() {
-    this.database = prismaClient;
+    this.database = prismaClient.expense;
   }
 
-  async findAll(
-    userId: string,
-    paginationQuery: PaginationQueryDto
-  ): Promise<Expense[]> {
+  async findAll(userId: string, paginationQuery: PaginationQueryDto) {
     try {
       const { limit, offset } = paginationQuery;
-      return await this.database.expense.findMany({
+      return await this.database.findMany({
         orderBy: {
           id: 'asc',
         },
@@ -31,13 +28,13 @@ export class ExpenseRepository {
         take: limit,
       });
     } catch (error: unknown) {
-      logError(error, 'expense repository');
+      logError(error, 'expense service');
     }
   }
 
-  async findById(id: number, userId: string): Promise<Expense | null> {
+  async findById(id: number, userId: string) {
     try {
-      return await this.database.expense.findUnique({
+      return await this.database.findUnique({
         where: {
           id: id,
           AND: {
@@ -48,27 +45,26 @@ export class ExpenseRepository {
         },
       });
     } catch (error: unknown) {
-      logError(error, 'expense repository');
+      logError(error, 'expense service');
     }
   }
 
-  async create(expense: CreateExpenseDto, userId: string): Promise<Expense> {
+  async create(expense: CreateExpenseDto, userId: string) {
     try {
-      return await this.database.expense.create({
+      return await this.database.create({
         data: {
           ...expense,
           userId,
         },
       });
     } catch (error: unknown) {
-      logError(error, 'expense repository');
+      logError(error, 'expense service');
     }
   }
 
-  async update(expense: Expense): Promise<Expense> {
+  async update(expense: Expense) {
     try {
-      return await this.database.expense.update({
-        data: expense,
+      const recordToUpdate = await this.database.findUnique({
         where: {
           id: expense.id,
           AND: {
@@ -76,29 +72,58 @@ export class ExpenseRepository {
           },
         },
       });
-    } catch (error: unknown) {
-      logError(error, 'expense repository');
-    }
-  }
 
-  async delete(expense: Expense): Promise<Expense> {
-    try {
-      return await this.database.expense.delete({
+      if (!recordToUpdate) {
+        return null;
+      }
+
+      return await this.database.update({
+        data: expense,
         where: {
-          id: expense.id,
+          id: recordToUpdate.id,
+          AND: {
+            userId: recordToUpdate.userId,
+          },
         },
       });
     } catch (error: unknown) {
-      logError(error, 'expense repository');
+      logError(error, 'expense service');
     }
   }
 
-  async findByMonth(month: Date, userId: string): Promise<Expense[]> {
+  async delete(expense: Expense) {
+    try {
+      const recordToDelete = await this.database.findUnique({
+        where: {
+          id: expense.id,
+          AND: {
+            userId: expense.userId,
+          },
+        },
+      });
+
+      if (!recordToDelete) {
+        return null;
+      }
+      return await this.database.delete({
+        where: {
+          id: recordToDelete.id,
+          AND: {
+            userId: recordToDelete.userId,
+          },
+        },
+      });
+    } catch (error: unknown) {
+      logError(error, 'expense service');
+    }
+  }
+
+  async findByMonth(month: Date, userId: string) {
     const firstDayOfCurrentMonth = startOfMonth(month);
     const lastDayOfCurrentMonth = lastDayOfMonth(month);
 
     try {
-      return this.database.expense.findMany({
+      return this.database.findMany({
         where: {
           date: {
             gte: firstDayOfCurrentMonth,
@@ -112,7 +137,7 @@ export class ExpenseRepository {
         },
       });
     } catch (error: unknown) {
-      logError(error, 'expense repository');
+      logError(error, 'expense service');
     }
   }
 }

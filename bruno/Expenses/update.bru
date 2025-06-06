@@ -5,21 +5,24 @@ meta {
 }
 
 put {
-  url: {{baseUrl}}/users/2/expenses/3
+  url: {{baseUrl}}/expenses/1
   body: json
-  auth: none
+  auth: inherit
 }
 
 body:json {
   {
-    "id": 3,
-    "title": "Bicycle",
-    "category": ["transportation", "leisure"],
-    "value": 800,
-    "date": "2024-11-09T15:20:21.048Z",
-    "cycle": "ONCE",
-    "type": "EXPENSE",
-    "createdAt": "2024-11-09T15:20:21.048Z",
-    "updatedAt": "2024-11-09T15:20:21.048Z"
-  }
+      "id": 1,
+      "title": "Bicyclee",
+      "category": [
+        "transportation",
+        "leisure"
+      ],
+      "cycle": "ONCE",
+      "type": "EXPENSE",
+      "value": 1400,
+      "date": "2025-06-06T18:25:43.511Z",
+      "createdAt": "2025-06-06T18:25:43.511Z",
+      "updatedAt": "2025-06-06T18:25:43.511Z"
+    }
 }
