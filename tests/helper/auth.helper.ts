@@ -1,9 +1,9 @@
 import { FastifyInstance } from 'fastify';
-import { CreateUserDto } from '../../src/app/modules/users/domain/dto/create-user.dto';
+import { RegisterUserDto } from '../../src/app/modules/authentication/domain/dtos/register-user.dto';
 
 export async function authAndGetToken(
   server: FastifyInstance,
-  user: CreateUserDto
+  user: RegisterUserDto
 ) {
   // register user
   await server.inject({
