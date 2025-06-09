@@ -67,7 +67,7 @@
     "prisma": "^5.21.1",
     "tap": "^21.0.1",
     "testcontainers": "^10.16.0",
-    "ts-node": "10.9.1",
+    "ts-node": "10.9.2",
     "tslib": "^2.3.0",
     "typescript": "^5.5.2",
     "typescript-eslint": "^8.0.0"
