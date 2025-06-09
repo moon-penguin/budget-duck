@@ -17,6 +17,7 @@ async function redis(fastify: FastifyInstance) {
   await fastify.register(fastifyRedis, {
     host: fastify.config.REDIS_HOST,
     port: fastify.config.REDIS_PORT,
+    closeClient: true,
   });
 
   fastify.decorate('redis_insert', insert);
