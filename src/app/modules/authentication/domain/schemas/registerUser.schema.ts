@@ -1,6 +1,6 @@
 import { Type } from '@sinclair/typebox';
 
-export const CreateUserSchema = Type.Object(
+export const RegisterUserSchema = Type.Object(
   {
     name: Type.String({
       minLength: 3,
@@ -15,8 +15,8 @@ export const CreateUserSchema = Type.Object(
     }),
   },
   {
-    $id: 'schema:user:create',
+    $id: 'schema:user:register',
     additionalProperties: false,
-    title: 'Create User',
+    title: 'Register User',
   }
 );

@@ -5,14 +5,14 @@ meta {
 }
 
 delete {
-  url: {{baseUrl}}/users/2/expenses/4
+  url: {{baseUrl}}/expenses/5
   body: json
-  auth: none
+  auth: inherit
 }
 
 body:json {
   {
-    "id": 4,
+    "id": 5,
     "title": "Bicycle",
     "category": ["transportation", "leisure"],
     "value": 1400,

@@ -1,24 +1,24 @@
 import { FastifyInstance } from 'fastify';
-import { UserController } from '../../modules/users/controller/user.controller';
-import { LoginUserSchema } from '../../modules/users/domain/schemas/loginUser.schema';
+import { LoginUserSchema } from '../../modules/authentication/domain/schemas/loginUser.schema';
 import {
   LoginResponseSchema,
   RefreshResponseSchema,
-} from '../../modules/users/domain/schemas/loginResponse.schema';
-import { CreateUserSchema } from '../../modules/users/domain/schemas/createUser.schema';
+} from '../../modules/authentication/domain/schemas/loginResponse.schema';
+import { RegisterUserSchema } from '../../modules/authentication/domain/schemas/registerUser.schema';
+import { AuthenticationController } from '../../modules/authentication/controller/auth.controller';
 
 export default async function (fastify: FastifyInstance) {
-  const userController = new UserController();
+  const authenticationController = new AuthenticationController();
 
   fastify.post(
     '/register',
     {
       schema: {
-        body: CreateUserSchema,
+        body: RegisterUserSchema,
       },
     },
     async (request, reply) => {
-      return await userController.register(request, reply);
+      return await authenticationController.register(request, reply);
     }
   );
 
@@ -33,7 +33,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await userController.login(request, reply);
+      return await authenticationController.login(request, reply);
     }
   );
 
@@ -48,7 +48,7 @@ export default async function (fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      return await userController.refresh(request, reply);
+      return await authenticationController.refreshToken(request, reply);
     }
   );
 
@@ -58,7 +58,7 @@ export default async function (fastify: FastifyInstance) {
       onRequest: fastify.authenticate,
     },
     async (request, reply) => {
-      return await userController.logout(request, reply);
+      return await authenticationController.logout(request, reply);
     }
   );
 
@@ -66,7 +66,7 @@ export default async function (fastify: FastifyInstance) {
     '/me',
     { onRequest: fastify.authenticate },
     async (request, reply) => {
-      return await userController.me(request, reply);
+      return await authenticationController.me(request, reply);
     }
   );
 }
